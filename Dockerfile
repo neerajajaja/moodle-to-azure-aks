@@ -15,7 +15,7 @@ RUN install_packages acl ca-certificates cron curl gzip libargon2-1 libaudit1 li
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "php" "7.4.3-0" --checksum d9cabc4f859bf3548e590bcfdce2dc1a7548aec09d4959ca346ae729109c30ae
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "apache" "2.4.41-0" --checksum 0364e80e08a89fda2d2d302609f813d5d497b6cb6bcf6643d2770b825abbc0fb
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "mysql-client" "10.3.29-0" --checksum 5bf8f1ed022c8ad75a4db5b8b72ae54ce427bff628d7e4025c5b5e67b876708d
-RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "libphp" "7.3.28-0" --checksum 70777f4c71ed24d033410bb3eaf4475d12aec111b971d7a3ed3f6935db72ed51
+RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "libphp" "7.4.3-0" --checksum e3560c2247f2e31bba720333a93d6ef3e645696086992c6e3d53ce661f86cbd4
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "render-template" "1.0.0-3" --checksum 8179ad1371c9a7d897fe3b1bf53bbe763f94edafef19acad2498dd48b3674efe
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "moodle" "3.10.4-0" --checksum 186ebba3a7737a964e2ef383acb50609436c6cec379c7a1d7337aa75bed402be
 RUN . /opt/bitnami/scripts/libcomponent.sh && component_unpack "gosu" "1.12.0-2" --checksum 4d858ac600c38af8de454c27b7f65c0074ec3069880cb16d259a6e40a46bbc50
