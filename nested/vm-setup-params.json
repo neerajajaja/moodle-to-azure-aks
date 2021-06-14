@@ -1,0 +1,102 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        },
+        "storageAccountName": {
+            "metadata": {
+                "description": "Storage account name from the storage account deployment."
+            },
+            "type": "string"
+        },
+        "storageAccountKey": {
+            "metadata": {
+                "description": "Storage account key from the storage account deployment."
+            },
+            "type": "string"
+        },
+        "fileShareName": {
+            "metadata": {
+                "description": "File share name from the storage account deployment."
+            },
+            "type": "string"
+        },
+        "SQLServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "SQL server name from the DB deployment."
+            }
+        },
+        "SQLServerAdmin": {
+            "type": "string",
+            "metadata": {
+                "description": "SQL server admin from the DB deployment."
+            }
+        },
+        "SQLAdminPassword":{
+            "type": "string",
+            "metadata": {
+                "description": "SQL server admin password from the DB deployment."
+            }
+        },
+        "base64AKScred": {
+            "metadata": {
+                "description": "Base 64 encoded kube config content from AKS deployment."
+            },
+            "type": "string"
+        },
+        "ACRusername": {
+            "metadata": {
+                "description": "ACR username from ACR deployment."
+            },
+            "type": "string"
+        },
+        "ACRtoken": { 
+            "metadata": {
+                "description": "ACR password from ACR deployment."
+            },
+            "type": "string"
+        }        
+    },
+    "resources": [],
+    "variables": {
+        "vmSetupParamsObj": {            
+            "moodleProfile": {
+                "phpVersion": "[parameters('moodleCommon').phpVersion]",             
+                "isMigration": "[parameters('moodleCommon').isMigration]"
+            },
+            "dbServerProfile": {
+                "SQLServerName": "[parameters('SQLServerName')]",
+                "SQLServerAdmin": "[parameters('SQLServerAdmin')]",
+                "SQLAdminPassword": "[parameters('SQLAdminPassword')]",
+                "SQLDBName": "[concat(parameters('moodleCommon').SQLDBName)]",
+                "exportDBname": "[parameters('moodleCommon').exportDBname]"
+            },
+            "storageProfile": {
+                "storageAccountName": "[parameters('storageAccountName')]",
+                "storageAccountKey": "[parameters('storageAccountKey')]",
+                "fileShareName": "[parameters('fileShareName')]"
+            },
+            "acrProfile": {
+                "ACRname": "[parameters('moodleCommon').acrName]",
+                "ACRusername": "[parameters('ACRusername')]",
+                "ACRtoken": "[parameters('ACRtoken')]"
+            },
+            "aksProfile": {
+                "base64AKScred": "[parameters('base64AKScred')]"
+            }
+        }
+    },
+    "outputs": {
+        "vmSetupParamsObj": {
+            "value": "[variables('vmSetupParamsObj')]",
+            "type": "object"
+        }
+    }
+}
+  

@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        },
+        "subnetIdRedis": {
+            "metadata": {
+                "description": "Azure resource ID of the subnet where this Redis instance is to be deployed"
+            },
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Cache/Redis",
+            "apiVersion": "2020-06-01",
+            "location": "[parameters('moodleCommon').location]",
+            "name": "[parameters('moodleCommon').redisCacheName]",
+            "properties": {
+                "enableNonSslPort": true,
+                "sku": {
+                    "capacity": 1,
+                    "family": "P",
+                    "name": "Premium"
+                },
+                "subnetId": "[parameters('subnetIdRedis')]"
+            }
+        }
+    ],
+    "variables": {
+        "redisResourceId": "[resourceId('Microsoft.Cache/Redis', parameters('moodleCommon').redisCacheName)]"
+    },
+    "outputs": {
+        "redisKey": {
+            "value": "[listKeys(variables('redisResourceId'), '2020-06-01').primaryKey]",
+            "type": "string"
+        }
+    }
+}

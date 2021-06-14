@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+      "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.ContainerService/managedClusters",
+        "apiVersion": "2020-03-01",
+        "name": "[parameters('moodleCommon').aksName]",
+        "location": "[parameters('moodleCommon').location]",
+        "properties": {
+          "dnsPrefix": "[concat(parameters('moodleCommon').aksName, '-dns')]",
+          "agentPoolProfiles": [
+            {
+              "name": "agentpool",
+              "count": "[parameters('moodleCommon').clusterCount]",
+              "osDiskSizeGB": "[parameters('moodleCommon').clusterosDiskSizeGB]",
+              "vmSize": "[parameters('moodleCommon').clusterVMSize]",
+              "osDiskType": "Managed",
+              "storageProfile": "ManagedDisks",
+              "kubeletDiskType": "OS",
+              "type": "VirtualMachineScaleSets",
+              "osType": "Linux",
+              "osSKU": "Ubuntu",
+              "mode": "System"
+            }
+          ],
+          "networkProfile": {
+                "networkPlugin": "kubenet",
+                "loadBalancerSku": "Standard",
+                "outboundType": "loadBalancer"
+          },
+          "addonProfiles": {
+            "httpApplicationRouting": {
+                "enabled": true
+            }
+          }
+        },
+        "identity": {
+            "type": "SystemAssigned"
+        }
+      }
+    ],
+    "variables": {
+        "aksId": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('moodleCommon').aksName)]"
+    },
+    "outputs": {
+      "base64AKScred": {
+          "value": "[listClusterAdminCredential(variables('aksId'), '2020-03-01').kubeconfigs[0].value]",
+          "type": "string"
+      }
+    }
+  }

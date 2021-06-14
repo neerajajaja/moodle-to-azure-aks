@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        },
+        "vnetName": {
+            "metadata": {
+                "description": "The name of the vnet where subnets should be created"
+            },
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2020-11-01",
+            "name": "[concat(parameters('vnetName'), '/', parameters('moodleCommon').subnetWeb)]",
+            "location": "[parameters('moodleCommon').location]",
+            "properties": {
+                "addressPrefix": "[parameters('moodleCommon').subnetWebRange]"
+            }
+        }
+    ],
+    "variables": {
+    }
+}

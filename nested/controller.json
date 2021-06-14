@@ -1,0 +1,183 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "moodleCommon": {
+      "metadata": {
+          "description": "Common Moodle values"
+      },
+      "type": "object"
+    },
+    "ctlrPubIpId": {
+      "metadata": {
+          "description": "Resource ID of the controller VM public IP address"
+      },
+      "type": "string"
+    },
+    "subnetIdWeb": {
+      "metadata": {
+          "description": "Azure resource ID of the subnet where this VM is to be deployed"
+      },
+      "type": "string"
+    },
+    "vmSetupParamsObj": {
+      "type": "object",
+      "metadata": {
+          "description": "JSON-structured VM setup params that'll be injected to the VM (through cloud-init) and used by the custom script (install_moodle.sh)"
+      }
+    }
+  },
+  "variables": {
+    "nicRef": "[resourceId('Microsoft.Network/networkInterfaces', parameters('moodleCommon').ctlrNicName)]",
+    "nsgRef": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('moodleCommon').ctlrNsgName)]",
+    "singleQuote": "'"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('moodleCommon').ctlrNsgName]",
+      "location": "[parameters('moodleCommon').location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow_SSH",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "22",
+                "direction": "Inbound",
+                "priority": 1000,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+            }
+        },
+        {
+            "name": "Allow_http",
+            "properties": {
+                "access": "Allow",
+                "destinationAddressPrefix": "*",
+                "destinationPortRange": "80",
+                "direction": "Inbound",
+                "priority": 1005,
+                "protocol": "Tcp",
+                "sourceAddressPrefix": "*",
+                "sourcePortRange": "*"
+            }
+        }
+          
+        ]
+      },
+      "tags": {
+          "displayName": "Controller NSG"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2020-06-01",
+      "name": "[parameters('moodleCommon').ctlrNicName]",
+      "location": "[parameters('moodleCommon').location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('moodleCommon').ctlrNsgName)]"
+      ],
+      "properties": {
+        "networkSecurityGroup": {
+            "id": "[variables('nsgRef')]"
+        },
+        "ipConfigurations": [
+          {
+            "name": "ipcfgctlr",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[parameters('ctlrPubIpId')]"
+              },
+              "subnet": {
+                "id": "[parameters('subnetIdWeb')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2020-06-01",
+      "location": "[parameters('moodleCommon').location]",
+      "name": "[parameters('moodleCommon').ctlrVmName]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', parameters('moodleCommon').ctlrNicName)]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('moodleCommon').controllerVmSku]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+              {
+                  "id": "[variables('nicRef')]"
+              }
+          ]
+        },
+        "osProfile": {
+          "adminUsername": "[parameters('moodleCommon').sshUsername]",
+          "computerName": "[parameters('moodleCommon').ctlrVmName]",
+          "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                  "publicKeys": [
+                      {
+                          "path": "[concat('/home/', parameters('moodleCommon').sshUsername, '/.ssh/authorized_keys')]",
+                          "keyData": "[parameters('moodleCommon').sshPublicKey]"
+                      }
+                  ]
+              }
+          },
+          "customData": "[base64(concat('#cloud-config\nwrite_files:\n- encoding: b64\n  content: ', base64(string(parameters('vmSetupParamsObj'))), '\n  owner: root:root\n  path: ', parameters('moodleCommon').moodleOnAzureConfigsJsonPath, '\n  permissions: ', variables('singleQuote'), '0400', variables('singleQuote')))]"
+        },
+        "storageProfile": {
+          "imageReference": "[parameters('moodleCommon').osType]",
+          "osDisk": {
+              "createOption": "FromImage",
+              "managedDisk": {
+                  "storageAccountType": "[parameters('moodleCommon').osDiskStorageType]"
+              },
+              "name": "[parameters('moodleCommon').ctlrVmName]"
+          },
+          "dataDisks": []
+        }      
+        
+      },
+      "tags": {
+        "displayName": "Controller Virtual Machine"
+      }
+    },
+    {
+      "condition": "[parameters('moodleCommon').applyScriptsSwitch]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-06-01",
+      "dependsOn": [
+          "[concat('Microsoft.Compute/virtualMachines/', parameters('moodleCommon').ctlrVmName)]"
+      ],
+      "name": "[concat(parameters('moodleCommon').ctlrVmName,'-ScriptProcessor')]",
+      "properties": {
+          "mode": "Incremental",
+          "parameters": {
+              "moodleCommon": {
+                  "value": "[parameters('moodleCommon')]"
+              }
+          },
+          "templateLink": {
+              "uri": "[concat(parameters('moodleCommon').baseTemplateUrl, 'controller-setup.json', parameters('moodleCommon').artifactsSasToken)]"
+          }
+      }
+    }
+  ],
+  "outputs": {
+    "controllerIP": {
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('moodleCommon').ctlrPipName), '2021-02-01').ipAddress]",
+      "type": "string"
+    }
+  }
+}

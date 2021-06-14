@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Azure Location for all resources."
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "absstoren"
+        },
+        "storageAccountType": {
+            "defaultValue": "Premium_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage Account type. This storage account is only for the Moodle ObjectFS plugin and/or the (currently disabled) Azure Files file share option"
+            },
+            "type": "string"
+        },
+        "fileServerDiskSize": {
+            "defaultValue": 1024,
+            "metadata": {
+                "description": "Size per disk for gluster nodes or nfs server"
+            },
+            "type": "int"
+        }            
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-01-01",
+            "location": "[parameters('location')]",
+            "name": "[concat(parameters('storageAccountName'))]",
+            "kind": "[if(equals(parameters('storageAccountType'), 'Premium_LRS'), 'FileStorage', 'Storage')]",
+            "sku": {
+                "name": "[parameters('storageAccountType')]"
+            },
+            "properties": {
+                "largeFileSharesState": "Enabled",
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+            "apiVersion": "2021-01-01",
+            "name": "[concat(variables('storageName'), '/default/aksshare')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+            ],
+            "properties": {
+                "accessTier": "[if(equals(parameters('storageAccountType'), 'Premium_LRS'), 'Premium', 'TransactionOptimized')]",
+                "shareQuota": "[int(parameters('fileServerDiskSize'))]",
+                "enabledProtocols": "SMB"
+            }
+        }
+    ],
+    "variables": {
+        "storageName": "[concat(parameters('storageAccountName'))]",
+        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+    },
+    "outputs": {
+        "storageAccountKey": {
+            "value": "[listKeys(variables('storageAccountId'), '2021-01-01').keys[0].value]",
+            "type": "string"
+        },
+        "storageAccountName": {
+            "value": "[variables('storageName')]",
+            "type": "string"
+        },
+        "fileShareName": {
+            "value": "aksshare",
+            "type": "string"
+
+        }
+    }
+}
+
