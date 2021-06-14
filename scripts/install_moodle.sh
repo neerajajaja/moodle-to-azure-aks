@@ -239,7 +239,7 @@ if [[ "$phpVersion" == "7.4" ]]
     then
     phpV="7.4.20"
     phpCS=35fb8a14f2f1b2d6f1b5ee01b0c60663522effe870a5c97c8a298450b68083e7
-    libphpCS=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    libphpCS=1af7c0e363486d06c5df6476c04c859dc816d6d4c6fd87bb3065cb15cd71968c
 elif [[ "$phpVersion" == "7.3" ]]
     then
     phpV="7.3.28"
