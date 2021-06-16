@@ -203,7 +203,7 @@ if (isset(\$_SERVER['HTTPS']) \&\& \$_SERVER['HTTPS'] == 'on') {\\
 } else {\\
   \$CFG->wwwroot   = 'http:\/\/' . \$_SERVER['HTTP_HOST'];\\
 }"
-sudo sed -Ei 's/(\$CFG->wwwroot)\s*=.*'"${conf_to_replace}"'/g' /mountdir/moodle/config.php
+sudo sed -Ei 's/(\$CFG->wwwroot)\s*=.*/'"${conf_to_replace}"'/g' /mountdir/moodle/config.php
 
 
 #install git tools
