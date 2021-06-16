@@ -7,14 +7,14 @@
             "metadata": {
                 "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
             },
-            "defaultValue": "https://moodlestoren.blob.core.windows.net/armtemplates/"
+            "defaultValue": "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
             "metadata": {
                 "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
             },
-            "defaultValue": "?sp=r&st=2021-06-11T13:56:05Z&se=2021-06-11T21:56:05Z&spr=https&sv=2020-02-10&sr=c&sig=e0Fn9rGSYMh7USlxLtubLNtmXBPRphXRMx37%2BJiFgn0%3D"
+            "defaultValue": ""
         },
         "applyScriptsSwitch": {
             "defaultValue": true,
@@ -123,9 +123,15 @@
         "fileServerDiskSize": {
             "defaultValue": 1024,
             "metadata": {
-                "description": "Size per disk for gluster nodes or nfs server"
+                "description": "Size per disk for azurefile server"
             },
             "type": "int"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account name as created in storagedeploy.json"
+            }
         },
         "storageAccountType": {
             "defaultValue": "Premium_LRS",
@@ -372,7 +378,7 @@
     },
     "variables":{
         "moodleCommon": {
-            "baseTemplateUrl": "[concat(parameters('_artifactsLocation'))]",
+            "baseTemplateUrl": "[concat(parameters('_artifactsLocation'),'nested/')]",
             "acrName": "[concat('acr',variables('resourceprefix'))]",
             "location": "[parameters('location')]",
             "aksName": "[concat('aks-',variables('resourceprefix'))]",
@@ -382,9 +388,9 @@
             "ctlrVmName": "[concat('controller-vm-',variables('resourceprefix'))]",
             "moodleInstallScriptFilename": "install_moodle.sh",
             "moodleOnAzureConfigsJsonPath": "/var/lib/cloud/instance/moodle_on_azure_configs.json",
-            "scriptLocation": "[concat(parameters('_artifactsLocation'))]",
+            "scriptLocation": "[concat(parameters('_artifactsLocation'),'scripts/')]",
             "artifactsSasToken": "[parameters('_artifactsLocationSasToken')]",
-            "yamlLocation": "[concat(parameters('_artifactsLocation'))]",
+            "yamlLocation": "[concat(parameters('_artifactsLocation'),'aks/')]",
             "pvScriptFilename": "pv.yaml",
             "pvcScriptFilename": "pvc.yaml",
             "ctlrNicName": "[concat('controller-vm-nic-',variables('resourceprefix'))]",
@@ -414,7 +420,7 @@
             "subnetWebRange": "[variables('subnetWebRange')]",
             "vnetName": "[concat('vnet-',variables('resourceprefix'))]",
             "vNetAddressSpace": "[parameters('vNetAddressSpace')]",
-            "storageAccountName": "[tolower(concat('abs','storen'))]",
+            "storageAccountName": "[parameters('storageAccountName')]",
             "storageAccountType": "[parameters('storageAccountType')]",
             "fileServerDiskSize": "[parameters('fileServerDiskSize')]",
             "phpVersion": "[parameters('phpVersion')]",

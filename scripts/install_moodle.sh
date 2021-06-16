@@ -171,7 +171,7 @@ sudo tar -xvf /mountdir/$exportDBname.sql.tar.gz -C /mountdir
 #import sql to Azure SQL
 mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword -e "CREATE DATABASE $SQLDBName CHARACTER SET utf8;"
 mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword -e "GRANT ALL ON $SQLDBName.* TO '$SQLServerAdmin' IDENTIFIED BY '$SQLAdminPassword';"
-mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword $SQLDBName < /mountdir/home/user123/moodle.sql #figure out whats the deal with this path
+mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword $SQLDBName < /mountdir/$exportDBname.sql #figure out whats the deal with this path
 mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword -e "flush privileges;"
 
 #editing moodle config

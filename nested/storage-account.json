@@ -74,6 +74,10 @@
             "value": "aksshare",
             "type": "string"
 
-        }
+        },
+        "fileServerDiskSize": {
+            "value": "[int(parameters('moodleCommon').fileServerDiskSize)]",
+            "type": "int"
+        }    
     }
 }

@@ -9,10 +9,6 @@
                 "description": "Azure Location for all resources."
             }
         },
-        "storageAccountName": {
-            "type": "string",
-            "defaultValue": "absstoren"
-        },
         "storageAccountType": {
             "defaultValue": "Premium_LRS",
             "allowedValues": [
@@ -29,7 +25,7 @@
         "fileServerDiskSize": {
             "defaultValue": 1024,
             "metadata": {
-                "description": "Size per disk for gluster nodes or nfs server"
+                "description": "Size per disk for azurefileshare"
             },
             "type": "int"
         }            
@@ -39,7 +35,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2021-01-01",
             "location": "[parameters('location')]",
-            "name": "[concat(parameters('storageAccountName'))]",
+            "name": "[variables('storageName')]",
             "kind": "[if(equals(parameters('storageAccountType'), 'Premium_LRS'), 'FileStorage', 'Storage')]",
             "sku": {
                 "name": "[parameters('storageAccountType')]"
@@ -83,8 +79,9 @@
         }
     ],
     "variables": {
-        "storageName": "[concat(parameters('storageAccountName'))]",
-        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]"
+        "storageName": "[tolower(concat('abs',variables('resourceprefix')))]",
+        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
+        "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]"
     },
     "outputs": {
         "storageAccountKey": {
@@ -99,7 +96,12 @@
             "value": "aksshare",
             "type": "string"
 
-        }
+        },
+        "fileServerDiskSize": {
+            "value": "[parameters('fileServerDiskSize')]",
+            "type": "int"
+        }            
+    
     }
 }
 
