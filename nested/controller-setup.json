@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2020-06-01",
+            "location": "[parameters('moodleCommon').location]",
+            "name": "[concat(parameters('moodleCommon').ctlrVmName,'/','install_moodle')]",
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "publisher": "Microsoft.Azure.Extensions",
+                "settings": {
+                    "fileUris": [
+                        "[variables('scriptUri')]",
+                        "[variables('pvUri')]",
+                        "[variables('pvcUri')]"                        
+                    ]
+                },
+                "protectedSettings":{
+                    "commandToExecute": "[concat('bash ', parameters('moodleCommon').moodleInstallScriptFilename, ' ', parameters('moodleCommon').moodleOnAzureConfigsJsonPath)]"
+                },
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0"
+            },
+            "tags": {
+                "displayName": "install_moodle"
+            }
+        }
+    ],
+    "variables": {
+        "scriptUri": "[concat(parameters('moodleCommon').scriptLocation,parameters('moodleCommon').moodleInstallScriptFilename,parameters('moodleCommon').artifactsSasToken)]",
+        "pvUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').pvScriptFilename,parameters('moodleCommon').artifactsSasToken)]",
+        "pvcUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').pvcScriptFilename,parameters('moodleCommon').artifactsSasToken)]"
+
+    }
+}

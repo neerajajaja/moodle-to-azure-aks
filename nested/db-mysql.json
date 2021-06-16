@@ -1,0 +1,85 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "moodleCommon": {
+        "metadata": {
+            "description": "Common Moodle values"
+        },
+        "type": "object"
+    }
+  },
+  "variables": {
+    "firewallrules": {
+      "batch": {
+        "rules": [
+          {
+            "Name": "rule1",
+            "StartIpAddress": "0.0.0.0",
+            "EndIpAddress": "255.255.255.255"
+          }
+        ]
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforMySQL/servers",
+      "apiVersion": "2017-12-01",
+      "name": "[parameters('moodleCommon').serverName]",
+      "kind": "",
+      "location": "[parameters('moodleCommon').location]",
+      "properties": {
+        "createMode": "Default",
+        "sslEnforcement": "[parameters('moodleCommon').sslEnforcement]",
+        "administratorLogin": "[parameters('moodleCommon').dbLogin]",
+        "administratorLoginPassword": "[parameters('moodleCommon').dbLoginPassword]",
+        "storageProfile": {
+            "storageMB": "[mul(parameters('moodleCommon').mysqlPgresStgSizeGB, 1024)]",
+            "backupRetentionDays": 35,
+            "geoRedundantBackup": "Enabled"
+        }
+      },
+      "sku": {
+        "capacity": "[parameters('moodleCommon').mysqlPgresVcores]",
+        "name": "[parameters('moodleCommon').mysqlPgresSkuName]",
+        "tier": "[parameters('moodleCommon').mysqlPgresSkuTier]",
+        "family": "[parameters('moodleCommon').mysqlPgresSkuHwFamily]"
+      }
+    },
+    {
+      "type": "Microsoft.DBforMySQL/servers/firewallRules",
+      "apiVersion": "2017-12-01",
+      "name": "[concat(parameters('moodleCommon').serverName,'/',variables('firewallrules').batch.rules[copyIndex()].Name)]",
+      "location": "[parameters('moodleCommon').location]",
+      "copy": {
+        "name": "firewallRulesCopy",
+        "mode": "Serial",
+        "batchSize": 1,
+        "count": "[length(variables('firewallrules').batch.rules)]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforMySQL/servers/', parameters('moodleCommon').serverName)]"
+      ],
+      "properties": {
+        "StartIpAddress": "[variables('firewallrules').batch.rules[copyIndex()].StartIpAddress]",
+        "EndIpAddress": "[variables('firewallrules').batch.rules[copyIndex()].EndIpAddress]"
+      }
+    }
+  ],
+  "outputs": {
+      "SQLServerName": {
+        "type": "string",
+        "value": "[reference(parameters('moodleCommon').serverName).fullyQualifiedDomainName]"
+      },
+      "SQLServerAdmin": {
+          "type": "string",
+          "value": "[concat(parameters('moodleCommon').dbLogin,'@',parameters('moodleCommon').serverName)]"
+      },
+      "SQLAdminPassword":{
+          "type": "string",
+          "value": "[parameters('moodleCommon').dbLoginPassword]"
+      }
+  }
+}
+

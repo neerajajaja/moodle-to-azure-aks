@@ -1,0 +1,438 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters":{
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/moodle-arm-templates/master/"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
+        },
+        "applyScriptsSwitch": {
+            "defaultValue": true,
+            "metadata": {
+                "description": "Switch to process or bypass all scripts/extensions"
+            },
+            "type": "bool"
+        },
+        "sshPublicKey": {
+            "metadata": {
+                "description": "ssh public key"
+            },
+            "type": "string"
+        },
+        "sshUsername": {
+            "defaultValue": "azureadmin",
+            "metadata": {
+                "description": "ssh user name"
+            },
+            "type": "string"
+        },
+        "controllerVmSku": {
+            "defaultValue": "Standard_DS1_v2",
+            "metadata": {
+                "description": "VM size for the controller VM"
+            },
+            "type": "string"
+        },
+        "osDiskStorageType": {
+            "defaultValue": "Premium_LRS",
+            "allowedValues": [
+                "Premium_LRS",
+                "Standard_LRS"
+            ],
+            "metadata": {
+                "description": "Azure storage type for all VMs' OS disks. With htmlLocalCopySwith true, Premium_LRS (SSD) is strongly recommended, as PHP files will be served from OS disks."
+            },
+            "type": "string"
+        },
+        "phpVersion": {
+            "allowedValues": [
+                "7.2",
+                "7.3",
+                "7.4"
+            ],
+            "defaultValue": "7.4",
+            "metadata": {
+                "description": "php version"
+            },
+            "type": "string"
+        },
+        "dbLogin": {
+            "defaultValue": "dbadmin",
+            "metadata": {
+                "description": "Database admin username"
+            },
+            "type": "string"
+        },
+        "mysqlPgresVcores": {
+            "allowedValues": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32
+            ],
+            "defaultValue": 2,
+            "metadata": {
+                "description": "MySql/Postgresql vCores. For Basic tier, only 1 & 2 are allowed. For GeneralPurpose tier, 2, 4, 8, 16, 32 are allowed. For MemoryOptimized, 2, 4, 8, 16 are allowed."
+            },
+            "type": "int"
+        },
+        "mysqlPgresStgSizeGB": {
+            "defaultValue": 125,
+            "minValue": 5,
+            "maxValue": 1024,
+            "metadata": {
+                "description": "MySql/Postgresql storage size in GB. Minimum 5GB, increase by 1GB, up to 1TB (1024 GB)"
+            },
+            "type": "int"
+        },
+        "mysqlPgresSkuTier": {
+            "allowedValues": [
+                "Basic",
+                "GeneralPurpose",
+                "MemoryOptimized"
+            ],
+            "defaultValue": "GeneralPurpose",
+            "metadata": {
+                "description": "MySql/Postgresql sku tier"
+            },
+            "type": "string"
+        },
+        "mysqlPgresSkuHwFamily": {
+            "allowedValues": [
+                "Gen4",
+                "Gen5"
+            ],
+            "defaultValue": "Gen5",
+            "metadata": {
+                "description": "MySql/Postgresql sku hardware family. Central US is Gen4 only, so make sure to change this parameter to Gen4 if your deployment is on Central US."
+            },
+            "type": "string"
+        },
+        "fileServerDiskSize": {
+            "defaultValue": 1024,
+            "metadata": {
+                "description": "Size per disk for azurefile server"
+            },
+            "type": "int"
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account name as created in storagedeploy.json"
+            }
+        },
+        "storageAccountType": {
+            "defaultValue": "Premium_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_ZRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage Account type. This storage account is only for the Moodle ObjectFS plugin and/or the (currently disabled) Azure Files file share option"
+            },
+            "type": "string"
+        },
+        "vNetAddressSpace": {
+            "defaultValue": "172.31.0.0",
+            "metadata": {
+                "description": "Address range for the Moodle virtual network and various subnets - presumed /16 for a newly created vnet in case customVnetId is blank. Further subneting (a number of */24 subnets starting from the xxx.yyy.zzz.0/24 will be created on a newly created vnet or your BYO-vnet (specified in customVnetId parameter)."
+            },
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Azure Location for all resources."
+            }
+        },
+        "isMigration": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Indicates whether the this template is using for migration scenario."
+            }
+        },
+        "clusterCount": {
+            "type": "int",
+            "defaultValue": 3
+        },
+        "sslEnforcement": {
+            "type": "string",
+            "defaultValue": "disabled"
+        },
+        "SQLDBName": {
+            "type": "string",
+            "defaultValue": "Moodledb"
+        },
+        "exportDBname": {
+            "type": "string",
+            "defaultValue": "migration-db-moodle"
+        },
+        "ubuntuVersion": {
+            "type": "string",
+            "allowedValues": [
+                "16.04-LTS",
+                "18.04-LTS"
+            ],
+            "defaultValue": "18.04-LTS"
+        },
+        "clusterosDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 128
+        },
+        "clusterVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS2_v2"
+        }
+    },
+    "resources":[
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "networkTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'network.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "storageAccountTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'storage-account.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "dbTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'db-mysql.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "aksTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'aks.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "acrTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'acr.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/dbTemplate",
+                "Microsoft.Resources/deployments/storageAccountTemplate",
+                "Microsoft.Resources/deployments/aksTemplate",
+                "Microsoft.Resources/deployments/acrTemplate",
+                "Microsoft.Resources/deployments/networkTemplate"
+            ],
+            "name": "vmSetupParamsTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    },
+                    "fileShareName": {
+                        "value": "[reference('storageAccountTemplate').outputs.fileShareName.value]"
+                    },
+                    "storageAccountName": {
+                        "value": "[reference('storageAccountTemplate').outputs.storageAccountName.value]"
+                    },
+                    "storageAccountKey": {
+                        "value": "[reference('storageAccountTemplate').outputs.storageAccountKey.value]"
+                    },
+                    "SQLServerName": {
+                        "value": "[reference('dbTemplate').outputs.SQLServerName.value]"
+                    },
+                    "SQLServerAdmin": {
+                        "value": "[reference('dbTemplate').outputs.SQLServerAdmin.value]"
+                    },
+                    "SQLAdminPassword": {
+                        "value": "[reference('dbTemplate').outputs.SQLAdminPassword.value]"
+                    },
+                    "base64AKScred": {
+                        "value": "[reference('aksTemplate').outputs.base64AKScred.value]"
+                    },
+                    "ACRusername": {
+                        "value": "[reference('acrTemplate').outputs.ACRusername.value]"
+                    },
+                    "ACRtoken": {
+                        "value": "[reference('acrTemplate').outputs.ACRtoken.value]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl,'vm-setup-params.json',parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "dependsOn": [
+                "Microsoft.Resources/deployments/dbTemplate",
+                "Microsoft.Resources/deployments/storageAccountTemplate",
+                "Microsoft.Resources/deployments/aksTemplate",
+                "Microsoft.Resources/deployments/acrTemplate",
+                "Microsoft.Resources/deployments/vmSetupParamsTemplate",
+                "Microsoft.Resources/deployments/networkTemplate"
+            ],
+            "name": "controllerTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    },
+                    "subnetIdWeb": {
+                        "value": "[reference('networkTemplate').outputs.subnetIdWeb.value]"
+                    },
+                    "ctlrPubIpId": {
+                        "value": "[reference('networkTemplate').outputs.ctlrPubIpId.value]"
+                    },
+                    "vmSetupParamsObj": {
+                        "value": "[reference('vmSetupParamsTemplate').outputs.vmSetupParamsObj.value]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl,'controller.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        }
+    ],
+    "outputs":{
+        "controllerInstanceIP": {
+            "type": "string",
+            "value": "[reference('controllerTemplate').outputs.controllerIP.value]"
+        },
+        "vmSetupParamsObj": {
+            "value": "[reference('vmSetupParamsTemplate').outputs.vmSetupParamsObj.value]",
+            "type": "object"
+
+        }
+    },
+    "variables":{
+        "moodleCommon": {
+            "baseTemplateUrl": "[concat(parameters('_artifactsLocation'),'nested/')]",
+            "acrName": "[concat('acr',variables('resourceprefix'))]",
+            "location": "[parameters('location')]",
+            "aksName": "[concat('aks-',variables('resourceprefix'))]",
+            "clusterCount": "[parameters('clusterCount')]",
+            "clusterosDiskSizeGB": "[parameters('clusterosDiskSizeGB')]",
+            "clusterVMSize": "[parameters('clusterVMSize')]",
+            "ctlrVmName": "[concat('controller-vm-',variables('resourceprefix'))]",
+            "moodleInstallScriptFilename": "install_moodle.sh",
+            "moodleOnAzureConfigsJsonPath": "/var/lib/cloud/instance/moodle_on_azure_configs.json",
+            "scriptLocation": "[concat(parameters('_artifactsLocation'),'scripts/')]",
+            "artifactsSasToken": "[parameters('_artifactsLocationSasToken')]",
+            "yamlLocation": "[concat(parameters('_artifactsLocation'),'aks/')]",
+            "pvScriptFilename": "pv.yaml",
+            "pvcScriptFilename": "pvc.yaml",
+            "ctlrNicName": "[concat('controller-vm-nic-',variables('resourceprefix'))]",
+            "ctlrNsgName": "[concat('controller-nsg-',variables('resourceprefix'))]",
+            "controllerVmSku": "[parameters('controllerVmSku')]",
+            "sshUsername": "[parameters('sshUsername')]",
+            "sshPublicKey": "[parameters('sshPublicKey')]",
+            "osType": {
+                "offer": "UbuntuServer",
+                "publisher": "Canonical",
+                "sku": "[parameters('ubuntuVersion')]",
+                "version": "latest"
+            },
+            "osDiskStorageType": "[parameters('osDiskStorageType')]",
+            "applyScriptsSwitch": "[parameters('applyScriptsSwitch')]",
+            "ctlrPipName": "[concat('controller-pubip-',variables('resourceprefix'))]",
+            "serverName": "[concat('dbmysql-', variables('resourceprefix'))]",
+            "sslEnforcement": "[parameters('sslEnforcement')]",
+            "dbLogin": "[parameters('dbLogin')]",
+            "dbLoginPassword": "[concat(substring(uniqueString(resourceGroup().id, deployment().name), 2, 11), '*7', toUpper('pfiwb'))]",
+            "mysqlPgresSkuHwFamily": "[parameters('mysqlPgresSkuHwFamily')]",
+            "mysqlPgresSkuName": "[concat(if(equals(parameters('mysqlPgresSkuTier'),'Basic'),'B', if(equals(parameters('mysqlPgresSkuTier'),'GeneralPurpose'),'GP', 'MO')), '_', parameters('mysqlPgresSkuHwFamily'), '_', string(parameters('mysqlPgresVcores')))]",
+            "mysqlPgresSkuTier": "[parameters('mysqlPgresSkuTier')]",
+            "mysqlPgresStgSizeGB": "[parameters('mysqlPgresStgSizeGB')]",
+            "mysqlPgresVcores": "[parameters('mysqlPgresVcores')]",
+            "subnetWeb": "[concat('web-subnet-',variables('resourceprefix'))]",
+            "subnetWebRange": "[variables('subnetWebRange')]",
+            "vnetName": "[concat('vnet-',variables('resourceprefix'))]",
+            "vNetAddressSpace": "[parameters('vNetAddressSpace')]",
+            "storageAccountName": "[parameters('storageAccountName')]",
+            "storageAccountType": "[parameters('storageAccountType')]",
+            "fileServerDiskSize": "[parameters('fileServerDiskSize')]",
+            "phpVersion": "[parameters('phpVersion')]",
+            "isMigration": "[parameters('isMigration')]",
+            "SQLDBName": "[parameters('SQLDBName')]",
+            "exportDBname": "[parameters('exportDBname')]"
+        },
+        "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]",
+        "subnetWebRange": "[concat( variables('octets')[0], '.', variables('octets')[1], '.', string(add(int(variables('octets')[2]),0)), '.0/24')]",
+        "octets": "[split(parameters('vNetAddressSpace'), '.')]"
+    }
+}
+
+
+

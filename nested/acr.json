@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+      "moodleCommon": {
+            "metadata": {
+                "description": "Common Moodle values"
+            },
+            "type": "object"
+        }
+    },
+    "resources": [
+      {
+        "name": "[parameters('moodleCommon').acrName]",
+        "type": "Microsoft.ContainerRegistry/registries",
+        "apiVersion": "2020-11-01-preview",
+        "location": "[parameters('moodleCommon').location]",
+        "sku": {
+            "name": "Standard",
+            "tier": "Standard"
+        },
+        "properties": {
+            "adminUserEnabled": true,
+            "encryption": {
+                "status": "disabled"    
+            },
+            "dataEndpointEnabled": false,
+            "publicNetworkAccess": "Enabled",
+            "networkRuleBypassOptions": "AzureServices",
+            "zoneRedundancy": "Disabled",
+            "anonymousPullEnabled": true
+        }
+      }
+    ],
+    "variables": {
+        "acrId": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('moodleCommon').acrName)]"
+    },
+    "outputs": {
+      "ACRusername": {
+          "value": "[listCredentials(variables('acrId'), '2020-11-01-preview').username]",
+          "type": "string"
+      },
+      "ACRtoken": {
+          "value": "[listCredentials(variables('acrId'), '2020-11-01-preview').passwords[0].value]",
+          "type": "string"
+      }
+    }
+}
