@@ -127,12 +127,6 @@
             },
             "type": "int"
         },
-        "storageAccountName": {
-            "type": "string",
-            "metadata": {
-                "description": "Storage account name as created in storagedeploy.json"
-            }
-        },
         "storageAccountType": {
             "defaultValue": "Premium_LRS",
             "allowedValues": [
@@ -420,7 +414,7 @@
             "subnetWebRange": "[variables('subnetWebRange')]",
             "vnetName": "[concat('vnet-',variables('resourceprefix'))]",
             "vNetAddressSpace": "[parameters('vNetAddressSpace')]",
-            "storageAccountName": "[parameters('storageAccountName')]",
+            "storageAccountName": "[tolower(concat('abs',variables('resourceprefix')))]",
             "storageAccountType": "[parameters('storageAccountType')]",
             "fileServerDiskSize": "[parameters('fileServerDiskSize')]",
             "phpVersion": "[parameters('phpVersion')]",

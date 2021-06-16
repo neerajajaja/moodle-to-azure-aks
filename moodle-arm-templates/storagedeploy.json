@@ -81,15 +81,11 @@
     "variables": {
         "storageName": "[tolower(concat('abs',variables('resourceprefix')))]",
         "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageName'))]",
-        "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]"
+        "resourceprefix": "[substring(uniqueString(resourceGroup().id, 'mainTemplate'), 3, 6)]"
     },
     "outputs": {
         "storageAccountKey": {
             "value": "[listKeys(variables('storageAccountId'), '2021-01-01').keys[0].value]",
-            "type": "string"
-        },
-        "storageAccountName": {
-            "value": "[variables('storageName')]",
             "type": "string"
         },
         "fileShareName": {
