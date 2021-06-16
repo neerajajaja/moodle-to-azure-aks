@@ -88,6 +88,10 @@
             "value": "[listKeys(variables('storageAccountId'), '2021-01-01').keys[0].value]",
             "type": "string"
         },
+        "storageAccountName": {
+            "type": "string",
+            "value": "[variables('storageName')]"
+        },
         "fileShareName": {
             "value": "aksshare",
             "type": "string"
