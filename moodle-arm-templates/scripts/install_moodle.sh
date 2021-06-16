@@ -262,7 +262,7 @@ moodleVersion="3.10.4"
 moodleCS=186ebba3a7737a964e2ef383acb50609436c6cec379c7a1d7337aa75bed402be
 
 #Build the container image
-sudo docker build --build-arg PHP_VERSION=$phpV --build-arg APACHE_VERSION=$apacheVersion --build-arg MOODLE_VERSION=$moodleVersion --build-arg LIBPHP_VERSION=$phpV --build-arg LIBPHP_CS=$libphpCS --build-arg PHP_CS=$phpCS --build-arg MOODLE_CS=$moodleCS --build-arg APACHE_CS=$apacheCS -t moodle-image /moodle-image/moodle-image/
+sudo docker build --build-arg PHP_VERSION=$phpV --build-arg APACHE_VERSION=$apacheVersion --build-arg --build-arg LIBPHP_VERSION=$phpV --build-arg LIBPHP_CS=$libphpCS --build-arg PHP_CS=$phpCS --build-arg APACHE_CS=$apacheCS -t moodle-image /moodle-image/moodle-image/
 
 #Publish to ACR
 sudo docker tag moodle-image $ACRname.azurecr.io/moodle-image:v1 
