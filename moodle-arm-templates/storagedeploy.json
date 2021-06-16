@@ -23,11 +23,11 @@
             "type": "string"
         },
         "fileServerDiskSize": {
-            "defaultValue": 1024,
+            "defaultValue": "1024",
             "metadata": {
                 "description": "Size per disk for azurefileshare"
             },
-            "type": "int"
+            "type": "string"
         }            
     },
     "resources": [
@@ -98,7 +98,7 @@
 
         },
         "fileServerDiskSize": {
-            "value": "[parameters('fileServerDiskSize')]",
+            "value": "[int(parameters('fileServerDiskSize'))]",
             "type": "int"
         }            
     

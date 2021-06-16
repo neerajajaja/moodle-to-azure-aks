@@ -121,11 +121,11 @@
             "type": "string"
         },
         "fileServerDiskSize": {
-            "defaultValue": 1024,
+            "defaultValue": "1024",
             "metadata": {
                 "description": "Size per disk for azurefile server"
             },
-            "type": "int"
+            "type": "string"
         },
         "storageAccountType": {
             "defaultValue": "Premium_LRS",
@@ -416,7 +416,7 @@
             "vNetAddressSpace": "[parameters('vNetAddressSpace')]",
             "storageAccountName": "[tolower(concat('abs',variables('resourceprefix')))]",
             "storageAccountType": "[parameters('storageAccountType')]",
-            "fileServerDiskSize": "[parameters('fileServerDiskSize')]",
+            "fileServerDiskSize": "[int(parameters('fileServerDiskSize'))]",
             "phpVersion": "[parameters('phpVersion')]",
             "isMigration": "[parameters('isMigration')]",
             "SQLDBName": "[parameters('SQLDBName')]",
