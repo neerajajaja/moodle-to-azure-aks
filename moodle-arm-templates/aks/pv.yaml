@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: azurefile
 spec:
+  storageClassName: azurefile-csi-premium
   capacity:
     storage: 800Gi
   accessModes:

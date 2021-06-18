@@ -16,6 +16,7 @@
         "name": "[parameters('moodleCommon').aksName]",
         "location": "[parameters('moodleCommon').location]",
         "properties": {
+          "kubernetesVersion": "1.21.1",
           "dnsPrefix": "[concat(parameters('moodleCommon').aksName, '-dns')]",
           "agentPoolProfiles": [
             {
