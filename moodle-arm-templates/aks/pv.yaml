@@ -11,3 +11,6 @@ spec:
     secretName: az-secret
     shareName: aksshare
     readOnly: false
+  mountOptions:
+    - actimeo=30
+    - mfsymlinks
