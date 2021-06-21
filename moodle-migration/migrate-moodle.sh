@@ -152,10 +152,10 @@ function show_results()
 
 
     #printf "\n\nnew site dns:\t\t $loadBalancerDNS\n"
-    #printf "controller VM IP:\t $controllerInstanceIP\n"
-    #printf "ssh Username:\t\t azureadmin\n"
-    #printf "ssh private key file:\t $SSH_KEY_PRIVATE_FILE\n" 
-    #printf "ssh public key file:\t $SSH_KEY_PUBLIC_FILE\n" 
+    printf "controller VM IP:\t $controllerInstanceIP\n"
+    printf "ssh Username:\t\t azureadmin\n"
+    printf "ssh private key file:\t $SSH_KEY_PRIVATE_FILE\n" 
+    printf "ssh public key file:\t $SSH_KEY_PUBLIC_FILE\n" 
 }
 
 function main(){
