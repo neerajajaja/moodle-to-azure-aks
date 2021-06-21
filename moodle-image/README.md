@@ -14,7 +14,7 @@ docker build
     -t moodle-image     #tag name
     .       # Location of folder containing Dockerfile
 ```
-The container doesn't perform a fresh installation of moodle, instead it picks up the mode code and data copied from on-prem from azure file share whic we use as persistent volume.
+The container doesn't perform a fresh installation of moodle, instead it picks up the mode code and data copied from on-prem from azure file share which we use as persistent volume.
 
 Further, our Moodle container is deployed to Kubernetes with the help of this [Bitnami Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/moodle).
 
