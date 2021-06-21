@@ -11,7 +11,7 @@ The script is must be executed on the Virtual/Physical Machine hosting a Moodle 
 
 ### 0. Enable Maintenance mode
 Set your moodle site in maintenance mode to ensure that data is preserved during the migration. 
-An administrator can put the moodle site into maintenance mode through *Administration > Site administration > Server > Maintenance mode*. Refer [this](https://docs.moodle.org/311/en/Maintenance_mode)
+An administrator can put the moodle site into maintenance mode through *Administration > Site administration > Server > Maintenance mode*. Refer this [link](https://docs.moodle.org/311/en/Maintenance_mode)
 
 
 ### 1. Commands required
