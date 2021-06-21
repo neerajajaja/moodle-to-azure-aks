@@ -9,6 +9,11 @@ This repository contains [Azure Resource Manager](https://docs.microsoft.com/en-
 ## Prerequisites
 The script is must be executed on the Virtual/Physical Machine hosting a Moodle web server. If there are multiple of them hosting web server behind a load balancer, the script should only be executed on one of the machines (you can choose any one of the machines). It is also important to ensure that there is only one moodle instance running on the webserver.
 
+### 0. Enable Maintenance mode
+Set your moodle site in maintenance mode to ensure that data is preserved during the migration. 
+An administrator can put the moodle site into maintenance mode through *Administration > Site administration > Server > Maintenance mode*. Refer [this](https://docs.moodle.org/311/en/Maintenance_mode)
+
+
 ### 1. Commands required
 The following need to be available on the on-prem system before we can perform the migration:
 ```
@@ -71,13 +76,3 @@ The Loadbalancer IP after the migration is performed can be gotten as below:
   2. Select Service and Ingress on the left
   3. The loadbalancer ip corresponding to moodle can then be found
 ![alt text](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/images/loadbalancer_ip.png?raw=true)<p align="center">
- 
-
-
-
-
-
-
-
-
-
