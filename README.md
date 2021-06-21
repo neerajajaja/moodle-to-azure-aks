@@ -2,6 +2,12 @@
 
 This repository contains [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview) templates, customised Moodle image suited for migration requirements based on the [Bitnami Docker Image for Moodle](https://github.com/bitnami/bitnami-docker-moodle) and end to end scripts to automate the migration of the on-premises Moodle App to container environment in Azure such as [Azure Kubernetes Services](https://azure.microsoft.com/en-in/services/kubernetes-service/). A step by step guide to perform the migration using the provided scripts can also be found below.
 
+Versions supported by this repository:
+- Moodle: 3.8.x, 3.9.x, 3.10.x
+- PHP Version: 7.2.x, 7.3.x, 7.4.x
+- Apache Version used: [2.4.41](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/install_moodle.sh#L234)
+- MySQL: 5.6, 5.7, 8.0
+
 ## Infrastructure to deploy in AKS
 
 ## Directory Structure
