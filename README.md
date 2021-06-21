@@ -75,5 +75,4 @@ The Loadbalancer IP after the migration is performed can be gotten as below:
   1. Select the AKS resource after navigating to your resource group(this name would have been entered by you as input) in the specified subscription.
   2. Select Service and Ingress on the left
   3. The loadbalancer ip corresponding to moodle can then be found
-<img src="images/loadbalancer_ip.png" width="500" height="500">
-![alt text](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/images/loadbalancer_ip.png?raw=true)<p align="center">
+  <img src="images/loadbalancer_ip.png" width="750" height="750">
