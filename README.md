@@ -61,7 +61,7 @@ The script outputs the *Controller VM IP*, *ssh Username* and the *private and p
 
 The Loadbalancer IP after the migration is performed can be gotten as below:
 - SSH into controller VM using the credentials and IP printed out as output
-- Run the commands below to get echo loadbalancer IP:
+- Run the commands below to echo the loadbalancer IP:
   ```
   export SERVICE_IP=$(kubectl get svc --namespace default moodle --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
   echo "Moodle(TM) URL: http://$SERVICE_IP/"
