@@ -140,18 +140,7 @@ function show_results()
     local infra_deployment_output="$(echo "$(cat "$INFRA_DEPLOYMENT_OUTPUT")")"
 
     local controllerInstanceIP="$(read_json_key "$infra_deployment_output" controllerInstanceIP.value)"
-    #local loadBalancerDNS="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.loadBalancerDNS.value)"
-
-    #local databaseDNS="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.databaseDNS.value)"
-    #local databaseAdminUsername="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.databaseAdminUsername.value)"
-    #local databaseAdminPassword="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.databaseAdminPassword.value)"
     
-    #local moodleAdminPassword="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.moodleAdminPassword.value)"
-    #local moodleDbPassword="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.moodleDbPassword.value)"
-    #local moodleDbUsername="$(read_json_key "$infra_deployment_output" mainTemplateOutputs.value.moodleDbUsername.value)"
-
-
-    #printf "\n\nnew site dns:\t\t $loadBalancerDNS\n"
     printf "controller VM IP:\t $controllerInstanceIP\n"
     printf "ssh Username:\t\t azureadmin\n"
     printf "ssh private key file:\t $SSH_KEY_PRIVATE_FILE\n" 
