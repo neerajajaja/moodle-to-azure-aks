@@ -12,7 +12,7 @@ docker build
     --build-arg PHP_CS=$phpCS         # php checksum to verify package integrity
     --build-arg APACHE_CS=$apacheCS       # apache checksum to verify package integrity
     -t moodle-image     #tag name
-    .       # Location of folder container Dockerfile
+    .       # Location of folder containing Dockerfile
 ```
 The container doesn't perform a fresh installation of moodle, instead it picks up the mode code and data copied from on-prem from azure file share whic we use as persistent volume.
 
