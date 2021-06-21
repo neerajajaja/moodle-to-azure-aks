@@ -13,5 +13,5 @@ spec:
     shareName: aksshare
     readOnly: false
   mountOptions:
-    - actimeo=30
+    - actimeo=30 #check which is better
     - mfsymlinks

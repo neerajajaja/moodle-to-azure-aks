@@ -18,7 +18,7 @@
                 "Premium_LRS"
             ],
             "metadata": {
-                "description": "Storage Account type. This storage account is only for the Moodle ObjectFS plugin and/or the (currently disabled) Azure Files file share option"
+                "description": "Storage Account type for Azure Files file share option"
             },
             "type": "string"
         },

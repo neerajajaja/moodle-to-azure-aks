@@ -42,13 +42,6 @@ function get_setup_params_from_configs_json #modify to export only required vari
     export ACRtoken=$(echo $json | jq -r .acrProfile.ACRtoken)
     export base64AKScred=$(echo $json | jq -r .aksProfile.base64AKScred)
     export fileShareName=$(echo $json | jq -r .storageProfile.fileShareName)
-    #export libphpCS=$(echo $json | jq -r .moodleProfile.libphpCS)
-    #export phpCS=$(echo $json | jq -r .moodleProfile.phpCS)
-    #export apacheCS=$(echo $json | jq -r .moodleProfile.apacheCS)
-    #export moodleCS=$(echo $json | jq -r .moodleProfile.moodleCS) 
-    #export apacheVersion=$(echo $json | jq -r .moodleProfile.apacheVersion)
-    #export moodleVersion=$(echo $json | jq -r .moodleProfile.moodleVersion)
-
 }
 
 function check_azure_files_moodle_share_exists
@@ -121,11 +114,6 @@ sudo apt-get -y install apt-transport-https
 sudo apt-get -y update > /dev/null
 sudo apt-get -y install azure-cli 
 
-# creating fileshare
-#az storage share create --name aksshare --account-name $storageAccountName --account-key $storageAccountKey --fail-on-exist >> /tmp/wabs.log --quota 127
-
-#sas=$(az storage share generate-sas -n aksshare --account-key $storageAccountKey --account-name aksshare --https-only --permissions lrw -o tsv)
-
 # If its a migration flow, then mount the azure file share now.
 if [ "$isMigration" = "true" ]; then
     # On migration flow, the moodle azure file share must present before running this script.
@@ -151,7 +139,7 @@ sudo mkdir -p /home/azureadmin/.kube
 sudo chmod 777 /home/azureadmin/.kube
 echo $base64AKScred | base64 --decode > /home/azureadmin/.kube/config
 sudo chmod 666 /home/azureadmin/.kube/config
-export KUBECONFIG=/home/azureadmin/.kube/config
+export KUBECONFIG=/home/azureadmin/.kube/config  #custom script extension runs as root, so setting KUBECONFIG
 
 #creating secret for storage account details
 kubectl create secret generic az-secret --from-literal=azurestorageaccountname=$storageAccountName --from-literal=azurestorageaccountkey=$storageAccountKey
@@ -176,16 +164,6 @@ mysql -h $SQLServerName -u $SQLServerAdmin -p$SQLAdminPassword -e "flush privile
 
 #editing moodle config
 sudo chmod 777 /mountdir/moodle/
-#sudo sed -i "7c\$CFG->dbtype = mysqli;" /mountdir/moodle/config.php
-#sudo sed -i "9c\$CFG->dbhost = $SQLServerName;" /mountdir/moodle/config.php
-#sudo sed -i "10c\$CFG->dbname = $SQLDBName;" /mountdir/moodle/config.php
-#sudo sed -i "11c\$CFG->dbuser = $SQLServerAdmin;" /mountdir/moodle/config.php
-#sudo sed -i "12c\$CFG->dbpass = $SQLAdminPassword;" /mountdir/moodle/config.php
-#sudo sed -i "16c\dbport => 3306," /mountdir/moodle/config.php
-#sudo sed -i "18c\dbcollation => utf8mb4_unicode_ci," /mountdir/moodle/config.php
-#sudo sed -i "20c\$CFG->dirroot = /bitnami/moodle/;" /mountdir/moodle/config.php
-#sudo sed -i "22c\$CFG->dataroot = /bitnami/moodledata/;" /mountdir/moodle/config.php
-
 sudo sed -Ei 's/(\$CFG->dbtype)\s*=.*/$CFG->dbtype = '"'mysqli'"';/g' /mountdir/moodle/config.php
 sudo sed -Ei 's/(\$CFG->dbhost)\s*=.*/$CFG->dbhost = '"'$SQLServerName'"';/g' /mountdir/moodle/config.php
 sudo sed -Ei 's/(\$CFG->dbname)\s*=.*/$CFG->dbname = '"'$SQLDBName'"';/g' /mountdir/moodle/config.php
@@ -230,10 +208,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 #get Docker engine
 sudo apt-get -y update
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io
-#Docker post installation: set permissions
-#grep -q docker /etc/group || sudo groupadd docker
-#sudo usermod -aG docker $USER
-#newgrp docker
+
 #set php version and php, libphp checksum variables
 if [[ "$phpVersion" == "7.4" ]]
     then
@@ -255,11 +230,9 @@ else
     exit
 fi
 
-#set apache, moodle version and checksum
+#set apache version and checksum
 apacheVersion="2.4.41"
 apacheCS=0364e80e08a89fda2d2d302609f813d5d497b6cb6bcf6643d2770b825abbc0fb
-moodleVersion="3.10.4"
-moodleCS=186ebba3a7737a964e2ef383acb50609436c6cec379c7a1d7337aa75bed402be
 
 #Build the container image
 sudo docker build --build-arg PHP_VERSION=$phpV --build-arg APACHE_VERSION=$apacheVersion --build-arg LIBPHP_VERSION=$phpV --build-arg LIBPHP_CS=$libphpCS --build-arg PHP_CS=$phpCS --build-arg APACHE_CS=$apacheCS -t moodle-image /moodle-image/moodle-image/

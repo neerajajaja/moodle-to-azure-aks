@@ -161,9 +161,6 @@ function show_results()
 function main(){
     read -p "Enter resource group name: " RESOURCE_GROUP
     read -p "Enter resource group location: " LOCATION
-    # RESOURCE_GROUP="shig-test-moodle2"
-    # LOCATION="westus"
-    # DISCOVERY_OUTPUT_FILE="$WORKING_DIRECTORY/sample-discovery.json"
     deep_discovery
     prepare_params
     create_afs

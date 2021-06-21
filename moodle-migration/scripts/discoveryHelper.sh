@@ -3,9 +3,7 @@ configPath="$1"
 
 check_moodle_enabled_on_webserver(){
     moodleEnabled=$(locate sites-enabled/moodle)
-    if [[ "$moodleEnabled" == *"nginx"* ]]; then
-        echo "nginx"
-    elif [[ "$moodleEnabled" == *"apache2"* ]]; then
+    if [[ "$moodleEnabled" == *"apache2"* ]]; then
         echo "apache2"
     else
         echo "Moodle site is not enabled on webserver. Please check sites-enabled location of webserver" > $FAILURE_FILE_PATH
@@ -17,8 +15,6 @@ check_moodle_enabled_on_webserver(){
 get_cert_location(){
     if [ "$webServerType" = "apache2" ]; then
         cert_location="$(grep "SSLCertificateFile" $webServerConfigPath | sed 's/SSLCertificateFile//')"
-    elif [ "$webServerType" = "nginx" ]; then
-        cert_location="$(grep "ssl_certificate" $webServerConfigPath | sed 's/ssl_certificate//')"
     fi
     echo $cert_location
 }
@@ -26,14 +22,11 @@ get_cert_location(){
 get_site_profile(){
     webServerType=""
     isApache2Present=$(command -v apache2 > /dev/null)
-    isNginxPresent=$(command -v nginx > /dev/null)
-    if [[ ! -z "$isApache2Present" ]] && [[ ! -z "$isNginxPresent" ]]; then
+    if [[ ! -z "$isApache2Present" ]]]; then
         webServerType=$(check_moodle_enabled_on_webserver)
     fi
     if command -v apache2 > /dev/null ; then
         webServerType="apache2"
-    elif command -v nginx > /dev/null ; then
-        webServerType="nginx"
     else
         echo "Invalid Web Server type." > $FAILURE_FILE_PATH
         #Exit with unsupported webserver type
@@ -43,10 +36,6 @@ get_site_profile(){
     if [ "$webServerType" = "apache2" ]; then
         webServerVersion=$($webServerType -v | head -n 1 | sed 's/[^0-9.]*//g')
         webServerConfigPath=$(locate $webServerType.conf | head -n 1 )
-    elif [ "$webServerType" = "nginx" ]; then
-        #nginx outputs to stderr. Hence need to redirect it to stdout
-        webServerVersion=$($webServerType -v 2>&1 | head -n 1 | sed 's/[^0-9.]*//g')
-        webServerConfigPath=$($webServerType -V 2>&1 | grep conf-path | sed 's/.*--conf-path=//g' | sed 's/--.*$//g')
     fi
 
     siteUrl=$(grep  'wwwroot' "$configPath" | sed 's/.*= //g' | sed "s/[';]//g")

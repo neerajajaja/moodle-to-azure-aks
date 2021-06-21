@@ -110,19 +110,6 @@ function read_discovery_key(){
     read_json_key "$DISCOVERY_CONFIG" $1
 }
 
-function populate_http_termination(){
-    # right now when 'httpsTermination' is set to 'None', deployed webserver's web page is corrupted.
-    # temporarily, set 'httpTermination' to 'VMSS' always. 
-    # Once error is fixed, set it back to 'None'
-
-    httpsTermination=$(read_discovery_key siteProfile.httpsTermination)
-    if [[ $httpsTermination == "None" ]]; then
-        echo "HTTPS is not enabled on source but it will be enabled on target using self-signed open SSL."
-
-    httpsTermination="VMSS" 
-    fi
-}
-
 function populate_sshPublicKey(){
     if [[ -f "$SSH_KEY_PRIVATE_FILE" ]]; then rm "$SSH_KEY_PRIVATE_FILE" "$SSH_KEY_PRIVATE_FILE.pub" ; fi
     ssh-keygen -t rsa -b 4096 -C "" -P "" -f "$SSH_KEY_PRIVATE_FILE" -q <<< y
@@ -147,43 +134,22 @@ function populate_siteUrl(){
 
 function prepare_params(){
     applyScriptsSwitch=true
-    #enableAccelNwForOtherVmsSwitch=false
-    #populate_http_termination                           # populates value into parameter 'httpsTermination'
     populate_sshPublicKey
-    #moodleVersion="$(read_discovery_key moodleProfile.version)"
-    #webServerType=$(read_discovery_key siteProfile.webServerType)
     phpVersion=$(read_discovery_key phpProfile.phpVersion)
     SQLDBName=$(read_discovery_key dbServerProfile.dbName)
-    #moodleDbUser=$(read_discovery_key dbServerProfile.dbUser)
     mysqlPgresStgSizeGB=$(read_discovery_key dbServerProfile.dbSizeInGB)
-    #mysqlVersion=$(read_discovery_key dbServerProfile.version)                                       # TODO: find a way to assign this parameter value
-    #fileServerType="azurefiles"                         # we only use AFS
     fileServerDiskSize=$(read_discovery_key fileServerProfile.fileShareSizeInGB)
-    #storageAccountType="Standard_LRS"
-    #loadBalancerSku="Standard"
-    #ubuntuVersion                                      # TODO: find a way to assign this parameter value
 }
 
 function write_infra_params_to_file(){
     
     get_params_file_prefix > "$INFRA_ARM_TEMPLATE_PARAMS_FILE"
-
-    #write_param_to_arm_file httpsTermination \"$httpsTermination\"
-    #write_param_to_arm_file loadBalancerSku \"$loadBalancerSku\"
-    #write_param_to_arm_file moodleVersion \"$moodleVersion\"
     write_param_to_arm_file sshPublicKey \""$sshPublicKey"\"
-    #write_param_to_arm_file webServerType \"$webServerType\"
     write_param_to_arm_file phpVersion \"$phpVersion\"
     write_param_to_arm_file SQLDBName \"$SQLDBName\"
-    #write_param_to_arm_file moodleDbUser \"$moodleDbUser\"
-    #write_param_to_arm_file mysqlVersion \"$mysqlVersion\"
     write_param_to_arm_file mysqlPgresStgSizeGB \"$mysqlPgresStgSizeGB\"
     write_param_to_arm_file applyScriptsSwitch $applyScriptsSwitch
-    # write_param_to_arm_file enableAccelNwForOtherVmsSwitch $enableAccelNwForOtherVmsSwitch
-    # write_param_to_arm_file fileServerType \"$fileServerType\"
     write_param_to_arm_file fileServerDiskSize \"$fileServerDiskSize\"
-    # write_param_to_arm_file storageAccountType \"$storageAccountType\"
-    # write_param_to_arm_file location \"$LOCATION\"
     
     truncate -s-2 "$INFRA_ARM_TEMPLATE_PARAMS_FILE"      # removes last 2 characters i.e. new line and comma from the file
     get_params_file_suffix >> "$INFRA_ARM_TEMPLATE_PARAMS_FILE"
