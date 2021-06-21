@@ -8,4 +8,4 @@ spec:
   storageClassName: azurefile-csi-premium
   resources:
     requests:
-      storage: 800Gi
+      storage: 100Gi
