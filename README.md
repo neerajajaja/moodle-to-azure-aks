@@ -8,48 +8,48 @@ This repository contains [Azure Resource Manager](https://docs.microsoft.com/en-
 ```
 moodle-to-azure-aks
 │ 
-├── moodle-arm-templates
-│   ├── aks
-│   │   ├── pv.yaml 					        # persistent volume to be applied to aks(called at install_moodle.sh)
-│   │   └── pvc.yaml 					        # persistent volume claim to be applied to aks(called at install_moodle.sh)
-│   ├── scripts
-│   │   └── install_moodle.sh 				# imports sql db to azure my sql db, builds custom container image and pushes to acr and deploys moodle on kubernetes with bitnami helm chart
-│   ├── nested
-│   │   ├── acr.json 	                # creates azure container registery that stores the image repository of custom moodle image
-│   │   ├── aks.json 	                # creates required AKS resource
-│   │   ├── controller-setup.json 	  # extension runs custom script install_moodle.sh in ctlr vm
-│   │   ├── controller.json	          # creates controller vm along with the other required resources. Triggers controller-setup.json
-│   │   ├── db-mysql.json 	          # creates Azure MySQL resource with required firewall rules
-│   │   ├── network-subnet.json       # creates the network subnet in the vnet created in network.json
-│   │   ├── network.json              # creates the network template including public ip for ctlr vm, required vnets and triggers subnet template
-│   │   ├── storage-account.json 	    # creates storage account and afs(similar to storage-account.json)
-│   │   └── vm-setup-params.json      # sets up the parameters to be injected into the controller vm
-│   ├── azuredeploy.json					    # main arm template that when triggered, deploys the intended infrastructure for moodle migration to aks by triggering templates in nested/
-│   └── storagedeploy.json            # arm template that creates storage account along with azure file share
+├── moodle-arm-templates #contains arm templates and scripts to deploy the required infrastructure 
+│   ├── aks #contains the volume yaml to be applied to aks
+│   │   ├── pv.yaml # persistent volume to be applied to aks(called at install_moodle.sh)
+│   │   └── pvc.yaml # persistent volume claim to be applied to aks(called at install_moodle.sh)
+│   ├── scripts #contains script to install moodle at ctlr vm
+│   │   └── install_moodle.sh # imports sql db to azure my sql db, builds custom container image and pushes to acr and deploys moodle on kubernetes with bitnami helm chart
+│   ├── nested #contains arm templates to create all required resources
+│   │   ├── acr.json # creates azure container registery that stores the image repository of custom moodle image
+│   │   ├── aks.json # creates required AKS resource
+│   │   ├── controller-setup.json # extension runs custom script install_moodle.sh in ctlr vm
+│   │   ├── controller.json	# creates controller vm along with the other required resources. Triggers controller-setup.json
+│   │   ├── db-mysql.json # creates Azure MySQL resource with required firewall rules
+│   │   ├── network-subnet.json # creates the network subnet in the vnet created in network.json
+│   │   ├── network.json # creates the network template including public ip for ctlr vm, required vnets and triggers subnet template
+│   │   ├── storage-account.json # creates storage account and afs(similar to storage-account.json)
+│   │   └── vm-setup-params.json # sets up the parameters to be injected into the controller vm
+│   ├── azuredeploy.json # main arm template that when triggered, deploys the intended infrastructure for moodle migration to aks by triggering templates in nested/
+│   └── storagedeploy.json # arm template that creates storage account along with azure file share
 │
-├── moodle-image							        # contains custom Moodle image which is used to build the container in install_moodle.sh script at controller vm
-│   ├── prebuildfs 					          # prebuildfs folder
-│   ├── rootfs 				                # rootfs folder
-│   ├── Dockerfile				            # Dockerfile for custom Moodle image
-│   └── README.md 					          # documents the customisation of bitnami docker moodle image to suit our migration requirements
+├── moodle-image # contains custom Moodle image which is used to build the container in install_moodle.sh script at controller vm
+│   ├── prebuildfs # prebuildfs folder
+│   ├── rootfs # rootfs folder
+│   ├── Dockerfile # Dockerfile for custom Moodle image
+│   └── README.md # documents the customisation of bitnami docker moodle image to suit our migration requirements
 │
 ├── moodle-migration 		              # folder with end to end automation scripts
 │   ├── scripts 		
-│   │   ├── create-afs.sh 	          # deploys the template storagedeploy.json that creates storage account with Azure file share
-│   │   ├── create-infra.sh 	        # deploys the main template azuredeploy.json
-│   │   ├── dataMigrate.sh	          # copies moodle, moodledata folders and sql dump to created azure file share
-│   │   ├── dataMigrateHelper.sh	    # helper functions for dataMigrate.sh
-│   │   ├── discovery.sh	            # performs configuration discovery of web server, php versions and other required config details
-│   │   ├── discoveryHelper.sh        # helper functions for discovery.sh
-│   │   ├── helper-functions.sh       # helper functions for moodle migration script
-│   │   └── prepare-arm-params.sh			# prepares parameters for arm templates for storage account creation with file share and main deployment json
-│   └── migrate-moodle.sh 				    # the script that executes end to end automation
+│   │   ├── create-afs.sh # deploys the template storagedeploy.json that creates storage account with Azure file share
+│   │   ├── create-infra.sh # deploys the main template azuredeploy.json
+│   │   ├── dataMigrate.sh # copies moodle, moodledata folders and sql dump to created azure file share
+│   │   ├── dataMigrateHelper.sh # helper functions for dataMigrate.sh
+│   │   ├── discovery.sh # performs configuration discovery of web server, php versions and other required config details
+│   │   ├── discoveryHelper.sh # helper functions for discovery.sh
+│   │   ├── helper-functions.sh # helper functions for moodle migration script
+│   │   └── prepare-arm-params.sh	# prepares parameters for arm templates for storage account creation with file share and main deployment json
+│   └── migrate-moodle.sh # the script that executes end to end automation
 │
-├── images 							              # images folder
-│   ├── loadbalancer_ip.png						# instructions to get load balancer ip
-│   └── infrastructure.png 					  # infrastructure deployed to Azure Kubernetes Service(AKS)
+├── images # images folder
+│   ├── loadbalancer_ip.png	# instructions to get load balancer ip
+│   └── infrastructure.png # infrastructure deployed to Azure Kubernetes Service(AKS)
 │   		 
-└── README.md                         # README file for the repo
+└── README.md # README file for the repo
 
 ```
 
