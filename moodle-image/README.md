@@ -20,7 +20,7 @@ Further, our Moodle container is deployed to Kubernetes with the help of this [B
 
 Sample command to [deploy](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/install_moodle.sh#L256) above helm chart with migration suitable parameters:
 ```
-helm install moodle bitnami/moodle \
+helm install moodle bitnami/moodle
     --set image.registry=$ACRname.azurecr.io      # image is pulled from ACR
     --set image.pullSecrets[0]=acr-secret      # Kubernetes secret containing ACR credentials
     --set image.repository=moodle-image      # image repository name in ACR
