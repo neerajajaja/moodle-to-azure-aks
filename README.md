@@ -60,7 +60,7 @@ moodle-to-azure-aks
 ```
 
 ## Prerequisites
-The script is must be executed on the Virtual/Physical Machine hosting a Moodle web server. If there are multiple of them hosting web server behind a load balancer, the script should only be executed on one of the machines (you can choose any one of the machines). It is also important to ensure that there is only one moodle instance running on the webserver.
+The script must be executed on the Virtual/Physical Machine hosting a Moodle web server. If there are multiple of them hosting web server behind a load balancer, the script should only be executed on one of the machines (you can choose any one of the machines). It is also important to ensure that there is only one moodle instance running on the webserver.
 
 ### 0. Enable Maintenance mode
 Set your moodle site in maintenance mode to ensure that data is preserved during the migration. 
