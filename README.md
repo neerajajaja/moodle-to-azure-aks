@@ -113,7 +113,7 @@ bash migrate-moodle.sh
 - Location of Azure resource group
 - Name of Azure resource group
 
-Status of Migration will be updated in the coonsole till the deployment is completed successfully.
+Status of Migration will be updated in the console till the deployment is completed successfully.
 
 The script outputs the *Controller VM IP*, *ssh Username* and the *private and public ssh key files* for the controller vm. This can be used to ssh into the controller vm to perform administrative tasks.
 
