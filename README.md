@@ -12,7 +12,7 @@ Versions supported by this repository:
 The templates in ```moodle-arm-templates``` deploys the below infrastructure:
 <img src="images/moodle_architecture.PNG" width="848" height="431">
 - **Controller VM:** 
-  -Builds the custom moodle image according to the PHP version and publishes it to Azure Container Registery. 
+  - Builds the custom moodle image according to the PHP version and publishes it to Azure Container Registery. 
   - Further, it deploys the Moodle custom image using the Bitnami Helm chart.
 - **Azure MySQL Database:** 
   - MySQL database on on-premises is exported to Azure database for MySQL at the Controller VM.
