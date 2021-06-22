@@ -111,7 +111,7 @@ Ensure that script executer has the following permissions. They can be set using
  - **read permissions** for *moodledata* folder, *moodle* folder and its contents, *config.php* and *version.php* located in moodle folder. 
  - **execute permissions** for performing database dump on the moodle database.
 
-## Step by Step Guide to Migrate to Azure
+## Guide to Migrate to Azure
 Firstly, this repository must be cloned
 ```
 git clone https://github.com/neerajajaja/moodle-to-azure-aks.git
