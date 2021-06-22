@@ -14,6 +14,7 @@ The templates in ```moodle-arm-templates``` deploys the below infrastructure:
 - **Controller VM:** 
   - Builds the custom moodle image according to the PHP version and publishes it to Azure Container Registery. 
   - Further, it deploys the Moodle custom image using the Bitnami Helm chart.
+  - Admin user can SSH into Controller VM for Administrative tasks.
 - **Azure MySQL Database:** 
   - MySQL database on on-premises is exported to Azure database for MySQL at the Controller VM.
 - **Azure Container Registery:** 
@@ -22,7 +23,7 @@ The templates in ```moodle-arm-templates``` deploys the below infrastructure:
   - Useful to deploy and manage our Moodle application.
   - It creates required resources such as Load Balancer, Node Pools, Persistent volume claim and others required for running our Moodle container image.
 - **Azure File Share:** 
-  - On-prem data(moodle, moodledata, sqldump) is copied to Azure File Share and it is mounted to Controller VM for purpose of editing Moodle config.php files with new config details. 
+  - On-prem data (moodle, moodledata, sqldump) is copied to Azure File Share and it is mounted to Controller VM for purpose of editing Moodle config.php files with new config details. 
   - Also, it serves as persistent volume for pods running the Moodle container image.
 
 ## Directory Structure
