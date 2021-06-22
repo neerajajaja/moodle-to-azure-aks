@@ -1,4 +1,4 @@
-# Migrating Moodle to Container Environment in Azure
+# Migrating Moodle to Container Environment (AKS) in Azure
 
 This repository contains [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview) templates, customised [Moodle container](https://github.com/neerajajaja/moodle-to-azure-aks/tree/master/moodle-image) image suited for migration requirements based on the [Bitnami Docker Image for Moodle](https://github.com/bitnami/bitnami-docker-moodle) and end to end scripts to automate the migration of the on-premises [Moodle](https://moodle.org/) App to container environment in Azure such as [Azure Kubernetes Services](https://azure.microsoft.com/en-in/services/kubernetes-service/). A step by step [guide](https://github.com/neerajajaja/moodle-to-azure-aks#prerequisites) to perform the migration using the provided scripts can also be found below.
 
@@ -77,14 +77,14 @@ moodle-to-azure-aks
 ```
 
 ## Prerequisites
-The script must be executed on the Virtual/Physical Machine hosting a Moodle web server. If there are multiple of them hosting web server behind a load balancer, the script should only be executed on one of the machines (you can choose any one of the machines). It is also important to ensure that there is only one moodle instance running on the webserver.
+The script must be executed on the Virtual/Physical Machine hosting the Moodle web server at the on-prem source. If there are multiple of them hosting web server behind a load balancer, the script should only be executed on one of the machines (you can choose any one of the machines). It is also important to ensure that there is only one moodle instance running on the webserver.
 
-### 0. Enable Maintenance Mode
+### 1. Enable Maintenance Mode
 Set your moodle site in maintenance mode to ensure that data is preserved during the migration. 
 An administrator can put the moodle site into maintenance mode through *Administration > Site administration > Server > Maintenance mode*. Refer this [link](https://docs.moodle.org/311/en/Maintenance_mode)
 
 
-### 1. Commands Required
+### 2. Command-line Tools Required
 The following need to be available on the on-prem system before we can perform the migration:
 ```
 tar
@@ -95,7 +95,7 @@ bc
 ```
 Steps to install [locate](https://askubuntu.com/questions/215503/how-to-install-the-locate-command/215509#215509) and [bc](https://askubuntu.com/questions/550985/installing-bc-and-any-maths-extension).
 
-### 2. Azure CLI Install and Login
+### 3. Azure CLI Install and Login
 - Additionally, we need to install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/what-is-azure-cli). The Azure CLI [installation guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt) can be followed or you can simply run the command below:
 ```
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
@@ -107,7 +107,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 az account set --subscription <subscription>
 ```
 
-### 3. Set Necessary Permissions
+### 4. Set Necessary Permissions
 Ensure that script executer has the following permissions. They can be set using ```chmod``` [command](https://linuxize.com/post/chmod-command-in-linux/):
  - **read permissions** for *moodledata* folder, *moodle* folder and its contents, *config.php* and *version.php* located in moodle folder. 
  - **execute permissions** for performing database dump on the moodle database.
