@@ -29,7 +29,7 @@ The templates in ```moodle-arm-templates``` deploys the below infrastructure:
 
 ## Migration Flow
 We carry out the migration of Moodle to AKS in three stages. The three stages are as listed in the image below:
-<img src="images/moodle-migration-flow.png" width="1587" height="2245">
+<img src="images/moodle-migration-flow.png" width="1000" height="1415">
 
 ## Directory Structure
 ```
