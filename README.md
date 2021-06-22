@@ -9,7 +9,7 @@ Versions supported by this repository:
 - **MySQL:** 5.6, 5.7, 8.0
 
 ## Infrastructure to deploy in AKS
-<img src="images/aks-architecture.PNG" width="1000" height="750">
+<img src="images/aks-architecture.PNG" width="848" height="431">
 
 ## Directory Structure
 ```
