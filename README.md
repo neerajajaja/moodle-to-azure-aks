@@ -10,7 +10,7 @@ Versions supported by this repository:
 
 ## Infrastructure to Deploy in AKS
 The templates in ```moodle-arm-templates``` deploys the below infrastructure:
-<img src="images/moodle_architecture.PNG" width="848" height="431">
+<img src="images/moodle_infra.png" width="848" height="431">
 - **Controller VM:** 
   - Builds the custom moodle image according to the PHP version and publishes it to Azure Container Registery. 
   - Further, it deploys the Moodle custom image using the Bitnami Helm chart.
