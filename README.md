@@ -27,6 +27,10 @@ The templates in ```moodle-arm-templates``` deploys the below infrastructure:
   - On-prem data (moodle, moodledata, sqldump) is copied to Azure File Share and it is mounted to Controller VM for purpose of editing Moodle config.php files with new config details. 
   - Also, it serves as persistent volume for pods running the Moodle container image.
 
+## Migration Flow
+We carry out the migration of Moodle to AKS in three stages. The three stages are as listed in the image below:
+<img src="images/moodle_infra.png" width="1587" height="2245">
+
 ## Directory Structure
 ```
 moodle-to-azure-aks
