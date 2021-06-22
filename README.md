@@ -9,7 +9,13 @@ Versions supported by this repository:
 - **MySQL:** 5.6, 5.7, 8.0
 
 ## Infrastructure to Deploy in AKS
+The templates in ```moodle-arm-templates``` deploys the below infrastructure:
 <img src="images/moodle_architecture.PNG" width="848" height="431">
+- **Controller VM:** Builds the custom moodle image according to the PHP version and publishes it to Azure Container Registery. Further, it deploys the Moodle custom image using the bitnami Helm chart.
+- **Azure MySQL Database:** MySQL database on on-premises is exported to Azure database for MySQL at the controller vm.
+- **Azure Container Registery:** Container image required for our moodle migration is pushed and pulled from the Azure Container Registery
+- **Azure Kubernetes Services:** Useful to deploy and manage our Moodle application into containerised environment
+- **Azure File Share:** On-prem data is copied to Azure File Share and it is mounted to controller vm for purpose of editing Moodle config.php files with new config details. Also serves as persistent volume for pods running the Moodle container image.
 
 ## Directory Structure
 ```
