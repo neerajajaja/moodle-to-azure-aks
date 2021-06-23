@@ -137,6 +137,7 @@ initContainers:
       - sh
       - -c
       - |
+        install_packages rsync
         mkdir -p "/bitnami/moodle" "/bitnami/moodledata" "/afs/moodle" "/afs/moodledata"
         rsync -avz /afs/moodle /bitnami
     securityContext:
