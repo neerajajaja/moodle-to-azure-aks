@@ -129,7 +129,36 @@ extraVolumeMounts: []
 
 ## Extra init containers to add to the deployment
 ##
-initContainers: []
+initContainers:
+  - name: data-copy
+    image:
+      registry: docker.io
+      repository: bitnami/bitnami-shell
+      tag: 10-debian-10-r112
+      pullPolicy: Always
+      pullSecrets: []
+    imagePullPolicy: Always
+    command:
+      - sh
+      - -c
+      - |
+        mkdir -p "/bitnami/moodle" "/bitnami/moodledata" "/afs/moodle" "/afs/moodledata"
+        rsync -avz /afs/moodle /bitnami
+    securityContext:
+      runAsUser: 0
+    volumeMounts:
+      - name: afs-moodle-data
+        mountPath: /afs/moodle
+        subPath: moodle
+      - name: afs-moodle-data
+        mountPath: /afs/moodledata
+        subPath: moodledata
+      - name: moodle-data
+        mountPath: /bitnami/moodle
+        subPath: moodle
+      - name: moodle-data
+        mountPath: /bitnami/moodledata
+        subPath: moodledata
 
 ## Extra sidecar containers to add to the deployment
 ##
