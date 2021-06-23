@@ -131,12 +131,7 @@ extraVolumeMounts: []
 ##
 initContainers:
   - name: data-copy
-    image:
-      registry: docker.io
-      repository: bitnami/bitnami-shell
-      tag: 10-debian-10-r112
-      pullPolicy: Always
-      pullSecrets: []
+    image: {{ include "moodle.volumePermissions.image" . }}
     imagePullPolicy: Always
     command:
       - sh
