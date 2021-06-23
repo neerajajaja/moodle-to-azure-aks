@@ -131,7 +131,7 @@ extraVolumeMounts: []
 ##
 initContainers:
   - name: data-copy
-    image: bitnami/bitnami-shell:10-debian-10-r112
+    image: bitnami/minideb:buster
     imagePullPolicy: Always
     command:
       - sh
