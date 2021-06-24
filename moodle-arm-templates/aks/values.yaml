@@ -138,7 +138,7 @@ initContainers:
       - -c
       - |
         install_packages wget ca-certificates
-        wget "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/initcontainer-script.sh"
+        wget "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/moodle-arm-templates/scripts/initcontainer-script.sh"
         bash initcontainer-script.sh
     securityContext:
       runAsUser: 0
