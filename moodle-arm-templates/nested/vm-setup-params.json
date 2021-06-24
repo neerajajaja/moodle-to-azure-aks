@@ -43,7 +43,13 @@
                 "description": "ACR password from ACR deployment."
             },
             "type": "string"
-        }        
+        },
+        "storageAccountKey": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account key"
+            }
+        }    
     },
     "resources": [],
     "variables": {
@@ -60,7 +66,7 @@
             },
             "storageProfile": {
                 "storageAccountName": "[parameters('moodleCommon').storageAccountName]",
-                "storageAccountKey": "[parameters('moodleCommon').storageAccountKey]",
+                "storageAccountKey": "[parameters('storageAccountKey')]",
                 "useAzureDisk": "[parameters('moodleCommon').useAzureDisk]",
                 "fileServerDiskSize": "[parameters('moodleCommon').fileServerDiskSize]"
             },

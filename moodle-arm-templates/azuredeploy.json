@@ -216,6 +216,22 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
+            "name": "storageAccountTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'storage-account.json', parameters('_artifactsLocationSasToken'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
             "name": "networkTemplate",
             "properties": {
                 "mode": "Incremental",
@@ -284,7 +300,8 @@
                 "Microsoft.Resources/deployments/dbTemplate",
                 "Microsoft.Resources/deployments/aksTemplate",
                 "Microsoft.Resources/deployments/acrTemplate",
-                "Microsoft.Resources/deployments/networkTemplate"
+                "Microsoft.Resources/deployments/networkTemplate",
+                "Microsoft.Resources/deployments/storageAccountTemplate"
             ],
             "name": "vmSetupParamsTemplate",
             "properties": {
@@ -292,6 +309,9 @@
                 "parameters": {
                     "moodleCommon": {
                         "value": "[variables('moodleCommon')]"
+                    },
+                    "storageAccountKey": {
+                        "value": "[reference('storageAccountTemplate').outputs.storageAccountKey.value]"
                     },                    
                     "SQLServerName": {
                         "value": "[reference('dbTemplate').outputs.SQLServerName.value]"
@@ -325,7 +345,8 @@
                 "Microsoft.Resources/deployments/aksTemplate",
                 "Microsoft.Resources/deployments/acrTemplate",
                 "Microsoft.Resources/deployments/vmSetupParamsTemplate",
-                "Microsoft.Resources/deployments/networkTemplate"
+                "Microsoft.Resources/deployments/networkTemplate",
+                "Microsoft.Resources/deployments/storageAccountTemplate"
             ],
             "name": "controllerTemplate",
             "properties": {
@@ -407,13 +428,11 @@
             "phpVersion": "[parameters('phpVersion')]",
             "SQLDBName": "[parameters('SQLDBName')]",
             "exportDBname": "[parameters('exportDBname')]",
-            "useAzureDisk": "[parameters('useAzureDisk')]",
-            "storageAccountKey": "[listKeys(variables('storageAccountId'), '2021-01-01').keys[0].value]"        
+            "useAzureDisk": "[parameters('useAzureDisk')]"                   
         },
         "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]",
         "subnetWebRange": "[concat( variables('octets')[0], '.', variables('octets')[1], '.', string(add(int(variables('octets')[2]),0)), '.0/24')]",
         "octets": "[split(parameters('vNetAddressSpace'), '.')]",
-        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
         "storageAccountName": "[tolower(concat('abs',variables('resourceprefix')))]"
     }
 }
