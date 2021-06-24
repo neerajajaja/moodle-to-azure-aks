@@ -19,7 +19,7 @@ clear_output_path(){
 validate_prerequisite(){
   log "Validating prerequisites"
   log "Verifying if tar is present"
-  if [[ tar --version >/dev/null]] ; then
+  if tar --version >/dev/null ; then
     log "tar present"
   else
     echo "tar package missing. Please install tar and retry" >> "${FAILURE_FILE_PATH}"

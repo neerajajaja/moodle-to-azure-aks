@@ -22,7 +22,7 @@ get_cert_location(){
 get_site_profile(){
     webServerType=""
     isApache2Present=$(command -v apache2 > /dev/null)
-    if [[ ! -z "$isApache2Present" ]]]; then
+    if [[ ! -z "$isApache2Present" ]] ; then
         webServerType=$(check_moodle_enabled_on_webserver)
     fi
     if command -v apache2 > /dev/null ; then
