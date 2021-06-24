@@ -137,7 +137,7 @@ initContainers:
       - bash
       - -c
       - |
-        install_packages wget
+        install_packages wget ca-certificates
         wget "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/initcontainer-script.sh"
         bash initcontainer-script.sh
     securityContext:
