@@ -80,7 +80,8 @@
             "storageProfile": {
                 "storageAccountName": "[parameters('storageAccountName')]",
                 "storageAccountKey": "[parameters('storageAccountKey')]",
-                "fileShareName": "[parameters('fileShareName')]"
+                "fileShareName": "[parameters('fileShareName')]",
+                "useAzureDisk": "[parameters('moodleCommon').useAzureDisk]"
             },
             "acrProfile": {
                 "ACRname": "[parameters('moodleCommon').acrName]",

@@ -42,6 +42,8 @@ function get_setup_params_from_configs_json #modify to export only required vari
     export ACRtoken=$(echo $json | jq -r .acrProfile.ACRtoken)
     export base64AKScred=$(echo $json | jq -r .aksProfile.base64AKScred)
     export fileShareName=$(echo $json | jq -r .storageProfile.fileShareName)
+    export useAzureDisk=$(echo $json | jq -r .storageProfile.useAzureDisk)
+
 }
 
 function check_azure_files_moodle_share_exists
@@ -144,9 +146,12 @@ export KUBECONFIG=/home/azureadmin/.kube/config  #custom script extension runs a
 #creating secret for storage account details
 kubectl create secret generic az-secret --from-literal=azurestorageaccountname=$storageAccountName --from-literal=azurestorageaccountkey=$storageAccountKey
 
-#create persistentvolume and persistencevolumeclaim using kubectl
+#create persistentvolume and persistencevolumeclaim using kubectl(create pvc for azure disk if useAzureDisk is set to true)
 kubectl apply -f pv.yaml
 kubectl apply -f pvc.yaml
+if [ "$useAzureDisk" = "true" ]; then
+    kubectl apply -f disk-pvc.yaml
+fi
 
 #get mysqlclient
 sudo apt-get -y --force-yes install mysql-client 
@@ -252,5 +257,9 @@ kubectl create secret docker-registry acr-secret --docker-server $ACRname.azurec
 #add bitnami chart repo to helm
 helm repo add bitnami https://charts.bitnami.com/bitnami
 
-#helm install
-helm install moodle bitnami/moodle --set image.registry=$ACRname.azurecr.io --set image.pullSecrets[0]=acr-secret --set image.repository=moodle-image --set image.tag=v1 --set moodleSkipInstall=true --set mariadb.enabled=false --set extraEnvVars[0].name=MOODLE_DATABASE_TYPE --set extraEnvVars[0].value=mysqli --set persistence.enabled=true --set persistence.existingClaim=azurefile --set externalDatabase.host=$SQLServerName --set externalDatabase.port=3306 --set externalDatabase.database=$SQLDBName  --set externalDatabase.user=$SQLServerAdmin --set externalDatabase.password=$SQLAdminPassword --set containerSecurityContext.runAsUser=0
+#helm install if useAzureDisk is set to true, then pvc of disk is given in existing claim else pvc of azure file is given
+if [ "$useAzureDisk" = "true" ]; then
+    helm install moodle bitnami/moodle -f https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/moodle-arm-templates/aks/values.yaml --set image.registry=$ACRname.azurecr.io --set image.pullSecrets[0]=acr-secret --set image.repository=moodle-image --set image.tag=v1 --set moodleSkipInstall=true --set mariadb.enabled=false --set extraEnvVars[0].name=MOODLE_DATABASE_TYPE --set extraEnvVars[0].value=mysqli --set persistence.enabled=true --set persistence.existingClaim=azure-managed-disk --set externalDatabase.host=$SQLServerName --set externalDatabase.port=3306 --set externalDatabase.database=$SQLDBName  --set externalDatabase.user=$SQLServerAdmin --set externalDatabase.password=$SQLAdminPassword --set containerSecurityContext.runAsUser=0
+else
+    helm install moodle bitnami/moodle --set image.registry=$ACRname.azurecr.io --set image.pullSecrets[0]=acr-secret --set image.repository=moodle-image --set image.tag=v1 --set moodleSkipInstall=true --set mariadb.enabled=false --set extraEnvVars[0].name=MOODLE_DATABASE_TYPE --set extraEnvVars[0].value=mysqli --set persistence.enabled=true --set persistence.existingClaim=azurefile --set externalDatabase.host=$SQLServerName --set externalDatabase.port=3306 --set externalDatabase.database=$SQLDBName  --set externalDatabase.user=$SQLServerAdmin --set externalDatabase.password=$SQLAdminPassword --set containerSecurityContext.runAsUser=0
+fi

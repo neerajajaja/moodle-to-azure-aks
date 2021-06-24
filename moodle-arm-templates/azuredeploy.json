@@ -23,6 +23,13 @@
             },
             "type": "bool"
         },
+        "useAzureDisk": {
+            "defaultValue": true,
+            "metadata": {
+                "description": "If true, data is copied from AFS to Azure disk(in initcontainer) and disk is used as persistent volume instead"
+            },
+            "type": "bool"
+        },
         "sshPublicKey": {
             "metadata": {
                 "description": "ssh public key"
@@ -439,7 +446,8 @@
             "phpVersion": "[parameters('phpVersion')]",
             "isMigration": "[parameters('isMigration')]",
             "SQLDBName": "[parameters('SQLDBName')]",
-            "exportDBname": "[parameters('exportDBname')]"
+            "exportDBname": "[parameters('exportDBname')]",
+            "useAzureDisk": "[parameters('useAzureDisk')]"
         },
         "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]",
         "subnetWebRange": "[concat( variables('octets')[0], '.', variables('octets')[1], '.', string(add(int(variables('octets')[2]),0)), '.0/24')]",
