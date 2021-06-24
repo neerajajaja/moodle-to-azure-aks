@@ -8,24 +8,6 @@
             },
             "type": "object"
         },
-        "storageAccountName": {
-            "metadata": {
-                "description": "Storage account name from the storage account deployment."
-            },
-            "type": "string"
-        },
-        "storageAccountKey": {
-            "metadata": {
-                "description": "Storage account key from the storage account deployment."
-            },
-            "type": "string"
-        },
-        "fileShareName": {
-            "metadata": {
-                "description": "File share name from the storage account deployment."
-            },
-            "type": "string"
-        },
         "SQLServerName": {
             "type": "string",
             "metadata": {
@@ -77,10 +59,10 @@
                 "exportDBname": "[parameters('moodleCommon').exportDBname]"
             },
             "storageProfile": {
-                "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[parameters('storageAccountKey')]",
-                "fileShareName": "[parameters('fileShareName')]",
-                "useAzureDisk": "[parameters('moodleCommon').useAzureDisk]"
+                "storageAccountName": "[parameters('moodleCommon').storageAccountName]",
+                "storageAccountKey": "[parameters('moodleCommon').storageAccountKey]",
+                "useAzureDisk": "[parameters('moodleCommon').useAzureDisk]",
+                "fileServerDiskSize": "[parameters('moodleCommon').fileServerDiskSize]"
             },
             "acrProfile": {
                 "ACRname": "[parameters('moodleCommon').acrName]",

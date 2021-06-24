@@ -232,22 +232,6 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-10-01",
-            "name": "storageAccountTemplate",
-            "properties": {
-                "mode": "Incremental",
-                "parameters": {
-                    "moodleCommon": {
-                        "value": "[variables('moodleCommon')]"
-                    }
-                },
-                "templateLink": {
-                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl, 'storage-account.json', parameters('_artifactsLocationSasToken'))]"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-10-01",
             "name": "dbTemplate",
             "properties": {
                 "mode": "Incremental",
@@ -298,7 +282,6 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "Microsoft.Resources/deployments/dbTemplate",
-                "Microsoft.Resources/deployments/storageAccountTemplate",
                 "Microsoft.Resources/deployments/aksTemplate",
                 "Microsoft.Resources/deployments/acrTemplate",
                 "Microsoft.Resources/deployments/networkTemplate"
@@ -309,16 +292,7 @@
                 "parameters": {
                     "moodleCommon": {
                         "value": "[variables('moodleCommon')]"
-                    },
-                    "fileShareName": {
-                        "value": "[reference('storageAccountTemplate').outputs.fileShareName.value]"
-                    },
-                    "storageAccountName": {
-                        "value": "[reference('storageAccountTemplate').outputs.storageAccountName.value]"
-                    },
-                    "storageAccountKey": {
-                        "value": "[reference('storageAccountTemplate').outputs.storageAccountKey.value]"
-                    },
+                    },                    
                     "SQLServerName": {
                         "value": "[reference('dbTemplate').outputs.SQLServerName.value]"
                     },
@@ -348,7 +322,6 @@
             "apiVersion": "2020-10-01",
             "dependsOn": [
                 "Microsoft.Resources/deployments/dbTemplate",
-                "Microsoft.Resources/deployments/storageAccountTemplate",
                 "Microsoft.Resources/deployments/aksTemplate",
                 "Microsoft.Resources/deployments/acrTemplate",
                 "Microsoft.Resources/deployments/vmSetupParamsTemplate",
@@ -434,11 +407,13 @@
             "phpVersion": "[parameters('phpVersion')]",
             "SQLDBName": "[parameters('SQLDBName')]",
             "exportDBname": "[parameters('exportDBname')]",
-            "useAzureDisk": "[parameters('useAzureDisk')]"
+            "useAzureDisk": "[parameters('useAzureDisk')]",
+            "storageAccountKey": "[listKeys(variables('storageAccountId'), '2021-01-01').keys[0].value]"        
         },
         "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]",
         "subnetWebRange": "[concat( variables('octets')[0], '.', variables('octets')[1], '.', string(add(int(variables('octets')[2]),0)), '.0/24')]",
-        "octets": "[split(parameters('vNetAddressSpace'), '.')]"
+        "octets": "[split(parameters('vNetAddressSpace'), '.')]",
+        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('moodleCommon').storageAccountName)]"
     }
 }
 

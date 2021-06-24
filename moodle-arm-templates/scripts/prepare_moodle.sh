@@ -40,8 +40,8 @@ function get_setup_params_from_configs_json #modify to export only required vari
     export ACRusername=$(echo $json | jq -r .acrProfile.ACRusername)
     export ACRtoken=$(echo $json | jq -r .acrProfile.ACRtoken)
     export base64AKScred=$(echo $json | jq -r .aksProfile.base64AKScred)
-    export fileShareName=$(echo $json | jq -r .storageProfile.fileShareName)
     export useAzureDisk=$(echo $json | jq -r .storageProfile.useAzureDisk)
+    export fileServerDiskSize=$(echo $json | jq -r .storageProfile.fileServerDiskSize)
 
 }
 

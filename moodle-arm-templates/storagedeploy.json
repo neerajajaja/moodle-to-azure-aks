@@ -95,7 +95,6 @@
         "fileShareName": {
             "value": "aksshare",
             "type": "string"
-
         },
         "fileServerDiskSize": {
             "value": "[int(parameters('fileServerDiskSize'))]",
