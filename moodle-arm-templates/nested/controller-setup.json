@@ -22,7 +22,8 @@
                     "fileUris": [
                         "[variables('scriptUri')]",
                         "[variables('pvUri')]",
-                        "[variables('pvcUri')]"                        
+                        "[variables('pvcUri')]",
+                        "[variables('adpvcUri')]"
                     ]
                 },
                 "protectedSettings":{
@@ -39,7 +40,8 @@
     "variables": {
         "scriptUri": "[concat(parameters('moodleCommon').scriptLocation,parameters('moodleCommon').moodleInstallScriptFilename,parameters('moodleCommon').artifactsSasToken)]",
         "pvUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').pvScriptFilename,parameters('moodleCommon').artifactsSasToken)]",
-        "pvcUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').pvcScriptFilename,parameters('moodleCommon').artifactsSasToken)]"
+        "pvcUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').pvcScriptFilename,parameters('moodleCommon').artifactsSasToken)]",
+        "adpvcUri": "[concat(parameters('moodleCommon').yamlLocation,parameters('moodleCommon').adpvcScriptFilename,parameters('moodleCommon').artifactsSasToken)]"
 
     }
 }

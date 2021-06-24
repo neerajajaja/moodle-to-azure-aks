@@ -413,6 +413,7 @@
             "yamlLocation": "[concat(parameters('_artifactsLocation'),'aks/')]",
             "pvScriptFilename": "pv.yaml",
             "pvcScriptFilename": "pvc.yaml",
+            "adpvcScriptFilename": "disk-pvc.yaml",
             "ctlrNicName": "[concat('controller-vm-nic-',variables('resourceprefix'))]",
             "ctlrNsgName": "[concat('controller-nsg-',variables('resourceprefix'))]",
             "controllerVmSku": "[parameters('controllerVmSku')]",
