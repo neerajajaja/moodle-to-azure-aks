@@ -67,8 +67,7 @@
     "variables": {
         "vmSetupParamsObj": {            
             "moodleProfile": {
-                "phpVersion": "[parameters('moodleCommon').phpVersion]",             
-                "isMigration": "[parameters('moodleCommon').isMigration]"
+                "phpVersion": "[parameters('moodleCommon').phpVersion]"
             },
             "dbServerProfile": {
                 "SQLServerName": "[parameters('SQLServerName')]",

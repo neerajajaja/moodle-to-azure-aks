@@ -31,7 +31,6 @@ function get_setup_params_from_configs_json #modify to export only required vari
     export storageAccountName=$(echo $json | jq -r .storageProfile.storageAccountName)
     export storageAccountKey=$(echo $json | jq -r .storageProfile.storageAccountKey)
     export phpVersion=$(echo $json | jq -r .moodleProfile.phpVersion)
-    export isMigration=$(echo $json | jq -r .moodleProfile.isMigration)
     export SQLServerName=$(echo $json | jq -r .dbServerProfile.SQLServerName)
     export SQLServerAdmin=$(echo $json | jq -r .dbServerProfile.SQLServerAdmin)
     export SQLAdminPassword=$(echo $json | jq -r .dbServerProfile.SQLAdminPassword)
@@ -116,16 +115,14 @@ sudo apt-get -y install apt-transport-https
 sudo apt-get -y update > /dev/null
 sudo apt-get -y install azure-cli 
 
-# If its a migration flow, then mount the azure file share now.
-if [ "$isMigration" = "true" ]; then
-    # On migration flow, the moodle azure file share must present before running this script.
-    echo -e '\n\rIts a migration flow, check whether moodle fileshare exists\n\r'
-    check_azure_files_moodle_share_exists $storageAccountName $storageAccountKey
-    
-    # Set up and mount Azure Files share.
-    echo -e '\n\rSetting up and mounting Azure Files share //'$storageAccountName'.file.core.windows.net/aksshare on /moodle\n\r'
-    setup_and_mount_azure_files_moodle_share $storageAccountName $storageAccountKey
-fi
+# mounting azure file share
+# check if the moodle azure file share is present before running this script.
+echo -e '\n\r check whether moodle fileshare exists\n\r'
+check_azure_files_moodle_share_exists $storageAccountName $storageAccountKey
+
+# Set up and mount Azure Files share.
+echo -e '\n\rSetting up and mounting Azure Files share //'$storageAccountName'.file.core.windows.net/aksshare on /moodle\n\r'
+setup_and_mount_azure_files_moodle_share $storageAccountName $storageAccountKey
 
 #install kubectl
 sudo chmod 777 /usr/local/bin

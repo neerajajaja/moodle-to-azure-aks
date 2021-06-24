@@ -159,13 +159,6 @@
                 "description": "Azure Location for all resources."
             }
         },
-        "isMigration": {
-            "type": "bool",
-            "defaultValue": true,
-            "metadata": {
-                "description": "Indicates whether the this template is using for migration scenario."
-            }
-        },
         "clusterCount": {
             "type": "int",
             "defaultValue": 3,
@@ -445,7 +438,6 @@
             "storageAccountType": "[parameters('storageAccountType')]",
             "fileServerDiskSize": "[int(parameters('fileServerDiskSize'))]",
             "phpVersion": "[parameters('phpVersion')]",
-            "isMigration": "[parameters('isMigration')]",
             "SQLDBName": "[parameters('SQLDBName')]",
             "exportDBname": "[parameters('exportDBname')]",
             "useAzureDisk": "[parameters('useAzureDisk')]"
