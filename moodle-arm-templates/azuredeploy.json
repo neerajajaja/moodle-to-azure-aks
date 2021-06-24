@@ -401,7 +401,7 @@
             "subnetWebRange": "[variables('subnetWebRange')]",
             "vnetName": "[concat('vnet-',variables('resourceprefix'))]",
             "vNetAddressSpace": "[parameters('vNetAddressSpace')]",
-            "storageAccountName": "[tolower(concat('abs',variables('resourceprefix')))]",
+            "storageAccountName": "[variables('storageAccountName')]",
             "storageAccountType": "[parameters('storageAccountType')]",
             "fileServerDiskSize": "[int(parameters('fileServerDiskSize'))]",
             "phpVersion": "[parameters('phpVersion')]",
@@ -413,7 +413,8 @@
         "resourceprefix": "[substring(uniqueString(resourceGroup().id, deployment().name), 3, 6)]",
         "subnetWebRange": "[concat( variables('octets')[0], '.', variables('octets')[1], '.', string(add(int(variables('octets')[2]),0)), '.0/24')]",
         "octets": "[split(parameters('vNetAddressSpace'), '.')]",
-        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('moodleCommon').storageAccountName)]"
+        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "storageAccountName": "[tolower(concat('abs',variables('resourceprefix')))]"
     }
 }
 
