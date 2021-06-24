@@ -381,11 +381,6 @@
         "controllerInstanceIP": {
             "type": "string",
             "value": "[reference('controllerTemplate').outputs.controllerIP.value]"
-        },
-        "vmSetupParamsObj": {
-            "value": "[reference('vmSetupParamsTemplate').outputs.vmSetupParamsObj.value]",
-            "type": "object"
-
         }
     },
     "variables":{
