@@ -121,7 +121,7 @@ Firstly, this repository must be cloned
 ```
 git clone https://github.com/neerajajaja/moodle-to-azure-aks.git
 ```
-Ensure that ```./moodle-migration/migrate-moodle.sh``` and all the scripts in ```./moodle-migration/scripts``` has execute permissions.
+Here, this repo or ```moodle-to-azure-aks``` is considered as the working directory. Ensure that ```./moodle-migration/migrate-moodle.sh``` and all the scripts in ```./moodle-migration/scripts``` has execute permissions.
 ```
 chmod -R 755 moodle-migration
 ```
