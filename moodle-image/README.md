@@ -2,7 +2,7 @@
 
 This folder contains the customised Moodle container image suitable to our migration requirements.
 
-This image supports PHP versions 7.2,7.3 and 7.4. Sample command to [build](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/install_moodle.sh#L238) the image:
+This image supports PHP versions 7.2,7.3 and 7.4. Sample command to [build](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/prepare_moodle.sh#L238) the image:
 ```
 docker build
     --build-arg PHP_VERSION=$phpV       
@@ -18,7 +18,7 @@ The container doesn't perform a fresh installation of moodle, instead it picks u
 
 Further, our Moodle container is deployed to Kubernetes with the help of this [Bitnami Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/moodle).
 
-Sample command to [deploy](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/install_moodle.sh#L256) above helm chart with migration suitable parameters:
+Sample command to [deploy](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/prepare_moodle.sh#L256) above helm chart with migration suitable parameters:
 ```
 helm install moodle bitnami/moodle
     --set image.registry=$ACRname.azurecr.io      # image is pulled from ACR

@@ -19,7 +19,7 @@
         "applyScriptsSwitch": {
             "defaultValue": true,
             "metadata": {
-                "description": "Switch to process or bypass all scripts/extensions. If true, install_moodle.sh script will run."
+                "description": "Switch to process or bypass all scripts/extensions. If true, prepare_moodle.sh script will run."
             },
             "type": "bool"
         },
@@ -406,7 +406,7 @@
             "clusterosDiskSizeGB": "[parameters('clusterosDiskSizeGB')]",
             "clusterVMSize": "[parameters('clusterVMSize')]",
             "ctlrVmName": "[concat('controller-vm-',variables('resourceprefix'))]",
-            "moodleInstallScriptFilename": "install_moodle.sh",
+            "moodleInstallScriptFilename": "prepare_moodle.sh",
             "moodleOnAzureConfigsJsonPath": "/var/lib/cloud/instance/moodle_on_azure_configs.json",
             "scriptLocation": "[concat(parameters('_artifactsLocation'),'scripts/')]",
             "artifactsSasToken": "[parameters('_artifactsLocationSasToken')]",

@@ -5,7 +5,7 @@ This repository contains [Azure Resource Manager](https://docs.microsoft.com/en-
 Versions supported by this repository:
 - **Moodle:** 3.8.x, 3.9.x, 3.10.x
 - **PHP Version:** 7.2.x, 7.3.x, 7.4.x
-- **Apache Version:** [2.4.41](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/install_moodle.sh#L234)
+- **Apache Version:** [2.4.41](https://github.com/neerajajaja/moodle-to-azure-aks/blob/master/moodle-arm-templates/scripts/prepare_moodle.sh#L234)
 - **MySQL:** 5.6, 5.7, 8.0
 
 ## Infrastructure to Deploy in AKS
@@ -37,14 +37,14 @@ moodle-to-azure-aks
 │ 
 ├── moodle-arm-templates          # contains arm templates and scripts to deploy the required infrastructure 
 │   ├── aks                       # contains the volume yaml to be applied to aks
-│   │   ├── pv.yaml               # persistent volume to be applied to aks(called at install_moodle.sh)
-│   │   └── pvc.yaml              # persistent volume claim to be applied to aks(called at install_moodle.sh)
+│   │   ├── pv.yaml               # persistent volume to be applied to aks(called at prepare_moodle.sh)
+│   │   └── pvc.yaml              # persistent volume claim to be applied to aks(called at prepare_moodle.sh)
 │   ├── scripts                   # contains script to install moodle at ctlr vm
-│   │   └── install_moodle.sh     # imports sql db to azure my sql db, builds custom container image and pushes to acr and deploys moodle on kubernetes with bitnami helm chart
+│   │   └── prepare_moodle.sh     # imports sql db to azure my sql db, builds custom container image and pushes to acr and deploys moodle on kubernetes with bitnami helm chart
 │   ├── nested                    # contains arm templates to create all required resources
 │   │   ├── acr.json              # creates azure container registery that stores the image repository of custom moodle image
 │   │   ├── aks.json              # creates required AKS resource
-│   │   ├── controller-setup.json      # extension runs custom script install_moodle.sh in ctlr vm
+│   │   ├── controller-setup.json      # extension runs custom script prepare_moodle.sh in ctlr vm
 │   │   ├── controller.json	      # creates controller vm along with the other required resources. Triggers controller-setup.json
 │   │   ├── db-mysql.json         # creates Azure MySQL resource with required firewall rules
 │   │   ├── network-subnet.json      # creates the network subnet in the vnet created in network.json
@@ -54,7 +54,7 @@ moodle-to-azure-aks
 │   ├── azuredeploy.json          # main arm template that when triggered, deploys the intended infrastructure for moodle migration to aks by triggering templates in nested/
 │   └── storagedeploy.json        # arm template that creates storage account along with azure file share
 │
-├── moodle-image                  # contains custom Moodle image which is used to build the container in install_moodle.sh script at controller vm
+├── moodle-image                  # contains custom Moodle image which is used to build the container in prepare_moodle.sh script at controller vm
 │   ├── prebuildfs                # prebuildfs folder
 │   ├── rootfs                    # rootfs folder
 │   ├── Dockerfile                # Dockerfile for custom Moodle image
