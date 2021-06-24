@@ -134,13 +134,12 @@ initContainers:
     image: bitnami/minideb:buster
     imagePullPolicy: Always
     command:
-      - sh
+      - bash
       - -c
       - |
-        install_packages rsync
-        mkdir -p "/bitnami/moodle" "/bitnami/moodledata" "/afs/moodle" "/afs/moodledata"
-        rsync -avz /afs/moodle /bitnami
-        rsync -avz /afs/moodledata /bitnami
+        install_packages wget
+        wget "https://raw.githubusercontent.com/neerajajaja/moodle-to-azure-aks/master/initcontainer-script.sh"
+        bash initcontainer-script.sh
     securityContext:
       runAsUser: 0
     volumeMounts:
