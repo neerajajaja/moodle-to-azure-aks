@@ -147,9 +147,9 @@ kubectl create secret generic az-secret --from-literal=azurestorageaccountname=$
 sudo chmod 755 pv.yaml
 sudo chmod 755 pvc.yaml
 sudo chmod 755 disk-pvc.yaml
-sudo sed -Ei 's/(100Gi)/'"'$fileServerDiskSize'"'Gi/g' pv.yaml
-sudo sed -Ei 's/(100Gi)/'"'$fileServerDiskSize'"'Gi/g' pvc.yaml
-sudo sed -Ei 's/(100Gi)/'"'$fileServerDiskSize'"'Gi/g' disk-pvc.yaml
+sudo sed -Ei 's/(100Gi)/'"$fileServerDiskSize"'Gi/g' pv.yaml
+sudo sed -Ei 's/(100Gi)/'"$fileServerDiskSize"'Gi/g' pvc.yaml
+sudo sed -Ei 's/(100Gi)/'"$fileServerDiskSize"'Gi/g' disk-pvc.yaml
 #create persistentvolume and persistencevolumeclaim using kubectl(create pvc for azure disk if useAzureDisk is set to true)
 kubectl apply -f pv.yaml
 kubectl apply -f pvc.yaml
