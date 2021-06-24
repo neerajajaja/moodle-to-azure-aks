@@ -24,7 +24,7 @@ image:
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
-  pullSecrets:
+  pullSecrets: []
   #   - myRegistryKeySecretName
 
   ## Set to true if you would like to see extra information on logs
