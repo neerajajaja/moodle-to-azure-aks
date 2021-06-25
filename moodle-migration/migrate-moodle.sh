@@ -156,7 +156,7 @@ function main(){
     migrate_data
     create_arm_infra
     show_results
-    echo "done"
+    echo "It will now take around 5-10 minutes for the pod to complete initialisation and reach ready state."
 }
 
 main
