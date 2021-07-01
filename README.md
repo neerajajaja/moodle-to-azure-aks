@@ -159,3 +159,17 @@ The Loadbalancer IP after the migration is performed can be gotten as below:
   2. Select Service and Ingress on the left
   3. The loadbalancer ip corresponding to moodle can then be found
   <img src="images/loadbalancer_ip.png" width="750" height="750">
+  
+The migrated site will now be in maintenance mode, to disable it you can follow either of the below two options:
+- Connect to http://LOADBALANCER_IP/login/index.php
+- Login with your admin user name and password
+- Go to *Administration > Site administration > Server > Maintenance mode* and disable the Maintenance mode the same way you had enabled it
+
+Alternatively,
+- SSH into the controller VM using the credentials and IP printed out earlier as the output after deployment is completed.
+- Execute ```kubectl exec pod/<pod-name> -it -- bash``` replace <pod-name> with the name of the moodle pod (you can get this by executing ```kubectl get pods```)
+- Run the following command to now disable the maintenance mode: ```php /bitnami/moodle/admin/cli/maintenance.php --disable```
+
+
+ 
+ 
